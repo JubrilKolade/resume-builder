@@ -8,6 +8,30 @@ interface TemplateSelectorProps {
 
 const templates = [
   {
+    id: 'executive' as TemplateType,
+    name: 'Executive',
+    description: 'Professional layout with blue header',
+    preview: '/templates/executive-preview.png',
+  },
+  {
+    id: 'minimalist' as TemplateType,
+    name: 'Minimalist',
+    description: 'Clean and simple two-column layout',
+    preview: '/templates/minimalist-preview.png',
+  },
+  {
+    id: 'creative' as TemplateType,
+    name: 'Creative',
+    description: 'Modern design with profile section and skill bars',
+    preview: '/templates/creative-preview.png',
+  },
+  {
+    id: 'professional' as TemplateType,
+    name: 'Professional',
+    description: 'Two-column layout with profile section',
+    preview: '/templates/professional-preview.png',
+  },
+  {
     id: 'modern' as TemplateType,
     name: 'Modern',
     description: 'Clean and contemporary design with accent colors',
@@ -45,9 +69,13 @@ export default function TemplateSelector({ selectedTemplate, onTemplateChange }:
             )}
             
             <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0 w-12 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded border border-gray-300 flex items-center justify-center">
+              <div className="shrink-0 w-12 h-16 bg-linear-to-br from-gray-100 to-gray-200 rounded border border-gray-300 flex items-center justify-center">
                 <span className="text-xs font-medium text-gray-600">
-                  {template.id === 'modern' ? 'A' : 'B'}
+                  {template.id === 'executive' ? 'E' :
+                   template.id === 'minimalist' ? 'M' : 
+                   template.id === 'creative' ? 'C' : 
+                   template.id === 'professional' ? 'P' : 
+                   template.id === 'modern' ? 'MD' : 'CL'}
                 </span>
               </div>
               

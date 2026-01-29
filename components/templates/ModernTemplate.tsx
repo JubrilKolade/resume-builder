@@ -23,7 +23,7 @@ export default function ModernTemplate({ data, style }: ModernTemplateProps) {
   return (
     <div className="max-w-[850px] mx-auto p-8 md:p-12 bg-white">
       {/* Header */}
-      <header className={sectionSpacing}>
+      <header className={`${sectionSpacing} text-center`}>
         <h1
           className="text-4xl font-bold mb-2"
           style={{ color: style.accentColor }}
@@ -31,7 +31,11 @@ export default function ModernTemplate({ data, style }: ModernTemplateProps) {
           {personalInfo.fullName || 'Your Name'}
         </h1>
         
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+        {personalInfo.title && (
+          <p className="text-lg text-gray-600 mb-4">{personalInfo.title}</p>
+        )}
+
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm text-gray-600">
           {personalInfo.email && (
             <div className="flex items-center space-x-1">
               <Mail className="w-4 h-4" style={{ color: style.accentColor }} />
@@ -51,24 +55,28 @@ export default function ModernTemplate({ data, style }: ModernTemplateProps) {
             </div>
           )}
           {personalInfo.linkedin && (
-            <div className="flex items-center space-x-1">
+            <a
+              href={personalInfo.linkedin.startsWith('http') ? personalInfo.linkedin : `https://${personalInfo.linkedin}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-1 text-blue-600 hover:underline"
+            >
               <Linkedin className="w-4 h-4" style={{ color: style.accentColor }} />
-              <span>{personalInfo.linkedin}</span>
-            </div>
+              <span>LinkedIn</span>
+            </a>
           )}
           {personalInfo.website && (
-            <div className="flex items-center space-x-1">
+            <a
+              href={personalInfo.website.startsWith('http') ? personalInfo.website : `https://${personalInfo.website}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-1 text-blue-600 hover:underline"
+            >
               <Globe className="w-4 h-4" style={{ color: style.accentColor }} />
-              <span>{personalInfo.website}</span>
-            </div>
+              <span>Website</span>
+            </a>
           )}
         </div>
-
-        {personalInfo.summary && (
-          <p className="mt-4 text-gray-700 leading-relaxed">
-            {personalInfo.summary}
-          </p>
-        )}
       </header>
 
       {/* Work Experience */}

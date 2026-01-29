@@ -17,17 +17,33 @@
 }
 
 @media print {
+  @page {
+    margin: 0;
+    size: A4;
+  }
+
   body {
     @apply bg-white;
+    margin: 0;
+    padding: 0;
   }
-  
+
   .no-print {
     display: none !important;
   }
-  
+
   .print-page {
     box-shadow: none !important;
-    page-break-after: always;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  /* Ensure the resume takes full page width */
+  .print-page > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 }
-

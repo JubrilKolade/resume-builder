@@ -18,6 +18,8 @@ export const defaultResumeData: AppState = {
       linkedin: '',
       website: '',
       summary: '',
+      title: '',
+      image: '',
     },
     workExperience: [],
     education: [],

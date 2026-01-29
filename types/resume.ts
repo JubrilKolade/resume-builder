@@ -6,6 +6,8 @@ export interface PersonalInfo {
   linkedin?: string;
   website?: string;
   summary?: string;
+  title?: string;
+  image?: string;
 }
 
 export interface WorkExperience {
@@ -35,6 +37,15 @@ export interface Skill {
   id: string;
   name: string;
   category?: string;
+  level?: number;
+}
+
+export type LanguageLevel = 'Basic' | 'Intermediate' | 'Advanced' | 'Fluent' | 'Native';
+
+export interface Language {
+  id: string;
+  name: string;
+  level: LanguageLevel | number; // Support both string and number for backward compatibility
 }
 
 export interface Certification {
@@ -59,15 +70,35 @@ export interface ResumeData {
   skills: Skill[];
   certifications?: Certification[];
   projects?: Project[];
+  languages?: Language[];
 }
 
-export type TemplateType = 'modern' | 'classic';
+export type TemplateType = 'modern' | 'classic' | 'professional' | 'creative' | 'minimalist' | 'executive';
 
 export interface ResumeStyle {
+  // Color Scheme
   accentColor: string;
+  textColor?: string;
+  backgroundColor?: string;
+  headerColor?: string;
+  
+  // Typography
   fontFamily: string;
   fontSize: 'small' | 'medium' | 'large';
+  headingFont?: string;
+  bodyFont?: string;
+  
+  // Layout
   spacing: 'compact' | 'normal' | 'relaxed';
+  sectionSpacing?: number;
+  
+  // Borders & Dividers
+  borderColor?: string;
+  borderWidth?: number;
+  borderRadius?: number;
+  
+  // Custom CSS (for advanced users)
+  customCSS?: string;
 }
 
 export interface AppState {

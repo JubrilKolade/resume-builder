@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Lato, Open_Sans, Roboto } from "next/font/google";
 import "./globals.css";
+import { ResumeProvider } from "@/contexts/ResumeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -11,6 +12,12 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'], variable: '--font-roboto' });
+const openSans = Open_Sans({ subsets: ['latin'], variable: '--font-open-sans' });
+const lato = Lato({ weight: ['400', '700'], subsets: ['latin'], variable: '--font-lato' });
 
 export const metadata: Metadata = {
   title: "Resume Builder - Create Professional Resumes",
@@ -25,9 +32,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${openSans.variable} ${lato.variable} antialiased`}
       >
-        {children}
+        <ResumeProvider>
+          {children}
+        </ResumeProvider>
       </body>
     </html>
   );

@@ -10,6 +10,16 @@ export default function PersonalInfoForm({ data, onChange }: PersonalInfoFormPro
     onChange({ ...data, [field]: value });
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Here you would typically upload the file to a server
+    // For now, we'll create a local URL for the image
+    const imageUrl = URL.createObjectURL(file);
+    onChange({ ...data, image: imageUrl });
+  };
+
   return (
     <div className="space-y-4 pt-4">
       <div>
@@ -115,6 +125,33 @@ export default function PersonalInfoForm({ data, onChange }: PersonalInfoFormPro
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
           placeholder="Brief overview of your professional background and key achievements..."
         />
+      </div>
+
+      <div className="mt-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Profile Image
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="block w-full text-sm text-gray-500
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-md file:border-0
+            file:text-sm file:font-semibold
+            file:bg-blue-50 file:text-blue-700
+            hover:file:bg-blue-100"
+        />
+        {data.image && (
+          <div className="mt-2">
+            <div className="text-xs text-gray-500 mb-1">Preview:</div>
+            <img
+              src={data.image}
+              alt="Profile preview"
+              className="h-24 w-24 object-cover rounded"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

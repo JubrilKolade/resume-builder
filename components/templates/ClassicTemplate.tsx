@@ -4,10 +4,14 @@ import { formatDate } from '@/utils/helpers';
 interface ClassicTemplateProps {
   data: ResumeData;
   style: ResumeStyle;
+  onDownload?: () => void;
 }
 
-export default function ClassicTemplate({ data, style }: ClassicTemplateProps) {
+export default function ClassicTemplate({ data, style, onDownload }: ClassicTemplateProps) {
   const { personalInfo, workExperience, education, skills } = data;
+  const accentColor = style.accentColor || '#1f2937';
+  const textColor = style.textColor || '#1f2937';
+  const bgColor = style.backgroundColor || '#ffffff';
   
   const spacingClass =
     style.spacing === 'compact'
@@ -22,23 +26,24 @@ export default function ClassicTemplate({ data, style }: ClassicTemplateProps) {
   return (
     <div className="max-w-[850px] mx-auto p-8 md:p-12 bg-white">
       {/* Header */}
-      <header className={`${sectionSpacing} text-center border-b-2 border-gray-800 pb-4`}>
-        <h1 className="text-3xl font-bold mb-2 text-gray-900">
+      <header className={`${sectionSpacing} text-center pb-4`} style={{ borderBottom: `2px solid ${accentColor}` }}>
+        <h1 className="text-3xl font-bold mb-2" style={{ color: textColor }}>
           {personalInfo.fullName || 'YOUR NAME'}
         </h1>
         
-        <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm text-gray-700">
+        <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm" style={{ color: textColor }}>
           {personalInfo.email && <span>{personalInfo.email}</span>}
-          {personalInfo.email && personalInfo.phone && <span>•</span>}
+          {personalInfo.email && personalInfo.phone && <span style={{ color: accentColor }}>•</span>}
           {personalInfo.phone && <span>{personalInfo.phone}</span>}
-          {personalInfo.phone && personalInfo.location && <span>•</span>}
+          {personalInfo.phone && personalInfo.location && <span style={{ color: accentColor }}>•</span>}
           {personalInfo.location && <span>{personalInfo.location}</span>}
         </div>
 
         {(personalInfo.linkedin || personalInfo.website) && (
-          <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm text-gray-700 mt-1">
+          <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm" style={{ color: textColor }}>
+            <div style={{ marginTop: '0.25rem' }} />
             {personalInfo.linkedin && <span>{personalInfo.linkedin}</span>}
-            {personalInfo.linkedin && personalInfo.website && <span>•</span>}
+            {personalInfo.linkedin && personalInfo.website && <span style={{ color: accentColor }}>•</span>}
             {personalInfo.website && <span>{personalInfo.website}</span>}
           </div>
         )}
@@ -47,10 +52,10 @@ export default function ClassicTemplate({ data, style }: ClassicTemplateProps) {
       {/* Professional Summary */}
       {personalInfo.summary && (
         <section className={sectionSpacing}>
-          <h2 className="text-lg font-bold mb-2 text-gray-900 uppercase tracking-wide">
+          <h2 className="text-lg font-bold mb-2 uppercase tracking-wide" style={{ color: textColor }}>
             Professional Summary
           </h2>
-          <p className="text-gray-700 leading-relaxed text-justify">
+          <p className="leading-relaxed text-justify" style={{ color: textColor }}>
             {personalInfo.summary}
           </p>
         </section>
