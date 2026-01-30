@@ -86,7 +86,7 @@ export default function EditPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content - Form */}
           <div className="lg:col-span-2">
-            <Card className="mb-8">
+            <Card className="mb-8 border-0 shadow-2xl">
               <CardHeader>
                 <CardTitle>Resume Content</CardTitle>
                 <CardDescription>Fill in your personal and professional information</CardDescription>
@@ -102,7 +102,7 @@ export default function EditPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <Card>
+            <Card className='border-0 shadow-2xl'>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>Template Preview</span>
@@ -127,7 +127,7 @@ export default function EditPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className='border-0 shadow-2xl'>
               <CardHeader>
                 <CardTitle>Navigation</CardTitle>
               </CardHeader>

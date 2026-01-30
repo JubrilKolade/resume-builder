@@ -53,7 +53,7 @@ export default function PreviewPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content - Preview */}
           <div className="lg:col-span-2">
-            <Card className="mb-8">
+            <Card className="mb-8 border-0 shadow-2xl">
               <CardHeader>
                 <CardTitle>Resume Preview</CardTitle>
                 <CardDescription>Template: {selectedTemplate}</CardDescription>
@@ -72,7 +72,20 @@ export default function PreviewPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <Card>
+            <Card className='border-0 shadow-2xl'>
+              <CardHeader>
+                <CardTitle>Customize Style</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <StyleCustomizer 
+                  style={resumeStyle}
+                  onStyleChange={handleStyleChange}
+                  onClose={() => {}}
+                />
+              </CardContent>
+            </Card>
+
+            <Card className='border-0 shadow-2xl'>
               <CardHeader>
                 <CardTitle>Navigation</CardTitle>
               </CardHeader>
@@ -96,8 +109,8 @@ export default function PreviewPage() {
                         2
                       </div>
                       <div className="ml-3">
-                        <div className="text-sm font-medium text-gray-500">Edit</div>
-                        <div className="text-xs text-gray-400">Fill in your details</div>
+                        <div className="text-sm font-medium text-blue-600">Edit</div>
+                        <div className="text-xs text-blue-500">Fill in your details</div>
                       </div>
                     </div>
                   </div>
@@ -129,20 +142,7 @@ export default function PreviewPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Customize Style</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <StyleCustomizer 
-                  style={resumeStyle}
-                  onStyleChange={handleStyleChange}
-                  onClose={() => {}}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
+            <Card className='border-0 shadow-2xl'>
               <CardHeader>
                 <CardTitle>Actions</CardTitle>
               </CardHeader>

@@ -65,7 +65,7 @@ export default function DownloadPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <Card className="mb-8">
+            <Card className="mb-8 border-0 shadow-2xl">
               <CardHeader>
                 <CardTitle>Download Options</CardTitle>
                 <CardDescription>Choose your preferred format</CardDescription>
@@ -204,7 +204,7 @@ export default function DownloadPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <Card>
+            <Card className='border-0 shadow-2xl'>
               <CardHeader>
                 <CardTitle>Next Steps</CardTitle>
               </CardHeader>
@@ -247,7 +247,64 @@ export default function DownloadPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className='border-0 shadow-2xl'>
+              <CardHeader>
+                <CardTitle>Navigation</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="ml-5 pl-4 border-l-2 border-blue-200">
+                    <div className="flex items-center py-2">
+                      <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                        1
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-blue-600">Template</div>
+                        <div className="text-xs text-blue-500">Select desired template</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="ml-5 pl-4 border-l-2 border-blue-200">
+                    <div className="flex items-center py-2">
+                      <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                        2
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-blue-600">Edit</div>
+                        <div className="text-xs text-blue-500">Fill in your details</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="ml-5 pl-4 border-l-2 border-blue-200">
+                    <div className="flex items-center py-2">
+                      <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                        3
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-blue-600">Preview</div>
+                        <div className="text-xs text-blue-500">Review your resume</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="ml-5 pl-4 border-l-2 border-gray-200">
+                    <div className="flex items-center py-2">
+                      <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                        4
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-blue-600">Download</div>
+                        <div className="text-xs text-blue-500">Get your resume</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className='border-0 shadow-2xl'>
               <CardHeader>
                 <CardTitle>Need Help?</CardTitle>
               </CardHeader>

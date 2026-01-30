@@ -55,7 +55,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 shadow-2xl">
               <CardHeader className="">
                 <CardTitle className="text-2xl">Select Your Resume Template</CardTitle>
                 <CardDescription className="text-base mt-2">
@@ -74,7 +74,7 @@ export default function Home() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 shadow-2xl">
               <CardHeader className="">
                 <CardTitle>Quick Customization</CardTitle>
                 <CardDescription>Personalize your resume's appearance</CardDescription>
@@ -144,7 +144,64 @@ export default function Home() {
               </CardFooter>
             </Card>
 
-            <Card className="border-0 shadow-lg bg-linear-to-br from-blue-50 to-indigo-50">
+            <Card className='border-0 shadow-2xl'>
+              <CardHeader>
+                <CardTitle>Navigation</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="ml-5 pl-4 border-l-2 border-blue-200">
+                    <div className="flex items-center py-2">
+                      <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                        1
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-blue-600">Template</div>
+                        <div className="text-xs text-blue-500">Select desired template</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="ml-5 pl-4 border-l-2 border-blue-200">
+                    <div className="flex items-center py-2">
+                      <div className="shrink-0 w-6 h-6 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-sm font-medium">
+                        2
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-gray-400">Edit</div>
+                        <div className="text-xs text-gray-400">Fill in your details</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="ml-5 pl-4 border-l-2 border-blue-200">
+                    <div className="flex items-center py-2">
+                      <div className="shrink-0 w-6 h-6 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-sm font-medium">
+                        3
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-gray-400">Preview</div>
+                        <div className="text-xs text-gray-400">Review your resume</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="ml-5 pl-4 border-l-2 border-gray-200">
+                    <div className="flex items-center py-2">
+                      <div className="shrink-0 w-6 h-6 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-sm font-medium">
+                        4
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-gray-400">Download</div>
+                        <div className="text-xs text-gray-400">Get your resume</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-2xl bg-linear-to-br from-blue-50 to-indigo-50">
               <CardHeader>
                 <CardTitle className="text-lg">💡 Pro Tips</CardTitle>
               </CardHeader>
