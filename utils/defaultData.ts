@@ -19,6 +19,7 @@ export const defaultResumeData: AppState = {
       website: '',
       summary: '',
       title: '',
+      career: '',
       image: '',
     },
     workExperience: [],
@@ -27,6 +28,7 @@ export const defaultResumeData: AppState = {
     certifications: [],
     community: [],
     leadership: [],
+    references: [],
     projects: [],
   },
 };
@@ -47,6 +49,8 @@ export const sampleResumeData: AppState = {
       location: 'San Francisco, CA',
       linkedin: 'linkedin.com/in/johndoe',
       website: 'johndoe.dev',
+      title: 'Senior Full Stack Developer',
+      career: 'Full Stack Developer',
       summary: 'Experienced full-stack developer with 5+ years of expertise in building scalable web applications. Passionate about creating elegant solutions to complex problems and mentoring junior developers.',
     },
     workExperience: [

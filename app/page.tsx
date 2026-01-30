@@ -5,13 +5,21 @@ import { useState } from 'react';
 import TemplateSelector from '@/components/TemplateSelector';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useResume } from '@/contexts/ResumeContext';
+import { ChevronDown } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
   const { selectedTemplate, setSelectedTemplate, resumeStyle, setResumeStyle } = useResume();
   const [selectedFont, setSelectedFont] = useState(resumeStyle.fontFamily);
   const [selectedTheme, setSelectedTheme] = useState('default');
+  const [fontOpen, setFontOpen] = useState(false);
 
   const fonts = [
     { id: 'inter', name: 'Inter', value: 'Inter' },
@@ -53,7 +61,7 @@ export default function Home() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             <Card className="border-0 shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 border-b">
+              <CardHeader className="">
                 <CardTitle className="text-2xl">Select Your Resume Template</CardTitle>
                 <CardDescription className="text-base mt-2">
                   Choose from professionally designed templates. You can change this anytime.
@@ -72,27 +80,42 @@ export default function Home() {
           {/* Sidebar */}
           <div className="space-y-6">
             <Card className="border-0 shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b">
+              <CardHeader className="">
                 <CardTitle>Quick Customization</CardTitle>
                 <CardDescription>Personalize your resume's appearance</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-6">
                 <div>
-                  <label htmlFor="font-select" className="block text-sm font-semibold text-gray-700 mb-3">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
                     Font Family
                   </label>
-                  <select
-                    id="font-select"
-                    value={selectedFont}
-                    onChange={(e) => setSelectedFont(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  >
-                    {fonts.map((font) => (
-                      <option key={font.id} value={font.value}>
-                        {font.name}
-                      </option>
-                    ))}
-                  </select>
+                  <DropdownMenu open={fontOpen} onOpenChange={setFontOpen}>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-between"
+                        style={{ fontFamily: selectedFont }}
+                      >
+                        {fonts.find(f => f.value === selectedFont)?.name || 'Select Font'}
+                        <ChevronDown className="w-4 h-4 opacity-50" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-full">
+                      {fonts.map((font) => (
+                        <DropdownMenuItem
+                          key={font.id}
+                          onClick={() => {
+                            setSelectedFont(font.value);
+                            setFontOpen(false);
+                          }}
+                          style={{ fontFamily: font.value }}
+                          className={selectedFont === font.value ? 'bg-blue-50' : ''}
+                        >
+                          {font.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
 
                 <div>

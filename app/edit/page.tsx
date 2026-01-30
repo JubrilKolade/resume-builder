@@ -113,7 +113,7 @@ export default function EditPage() {
                 <CardDescription>Your selected template</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="relative w-full h-80 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
+                <div className="relative w-full h-120 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
                   <Image
                     src={getTemplateImage(selectedTemplate)}
                     alt={`${selectedTemplate} template preview`}

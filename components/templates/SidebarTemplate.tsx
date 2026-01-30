@@ -106,6 +106,11 @@ export default function SidebarTemplate({ data, style }: SidebarTemplateProps) {
           <h1 className="text-4xl font-bold text-gray-900">
             {personalInfo.fullName || 'Your Name'}
           </h1>
+          {personalInfo.career && (
+            <p className="text-sm font-semibold text-gray-600 mt-1 tracking-wide uppercase">
+              {personalInfo.career}
+            </p>
+          )}
           {personalInfo.title && (
             <p className="text-lg text-gray-700 mt-1">
               {personalInfo.title}

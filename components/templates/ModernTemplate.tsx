@@ -17,6 +17,11 @@ export default function ModernTemplate({ data, style }: ModernTemplateProps) {
         <h1 className="text-4xl font-bold mb-2 text-gray-900">
           {personalInfo.fullName || 'Your Name'}
         </h1>
+        {personalInfo.career && (
+          <p className="text-sm font-semibold text-gray-600 mb-3 tracking-wide uppercase">
+            {personalInfo.career}
+          </p>
+        )}
         {personalInfo.title && (
           <p className="text-lg mb-3" style={{ color: accentColor, letterSpacing: '0.1em' }}>
             {personalInfo.title}

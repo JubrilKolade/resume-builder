@@ -9,6 +9,7 @@ import SkillsForm from '@/components/forms/SkillsForm';
 import CertificationsForm from '@/components/forms/CertificationsForm';
 import CommunityForm from '@/components/forms/CommunityForm';
 import LeadershipForm from '@/components/forms/LeadershipForm';
+import ReferencesForm from '@/components/forms/ReferencesForm';
 
 interface ResumeFormProps {
   data: ResumeData;
@@ -23,6 +24,7 @@ const formSections = [
   { id: 'certifications', label: 'Certifications' },
   { id: 'community', label: 'Community' },
   { id: 'leadership', label: 'Leadership' },
+  { id: 'references', label: 'References' },
 ];
 
 export default function ResumeForm({ data, onChange }: ResumeFormProps) {
@@ -54,6 +56,10 @@ export default function ResumeForm({ data, onChange }: ResumeFormProps) {
 
   const handleLeadershipChange = (leadership: any) => {
     onChange({ leadership });
+  };
+
+  const handleReferencesChange = (references: any) => {
+    onChange({ references });
   };
 
   return (
@@ -117,6 +123,12 @@ export default function ResumeForm({ data, onChange }: ResumeFormProps) {
           <LeadershipForm
             data={data.leadership || []}
             onChange={handleLeadershipChange}
+          />
+        )}
+        {activeSection === 'references' && (
+          <ReferencesForm
+            data={data.references || []}
+            onChange={handleReferencesChange}
           />
         )}
       </div>

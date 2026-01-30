@@ -7,7 +7,17 @@ export interface PersonalInfo {
   website?: string;
   summary?: string;
   title?: string;
+  career?: string;
   image?: string;
+}
+
+export interface Reference {
+  id: string;
+  name: string;
+  title: string;
+  company: string;
+  phone: string;
+  email: string;
 }
 
 export interface WorkExperience {
@@ -94,6 +104,7 @@ export interface ResumeData {
   languages?: Language[];
   community?: Community[];
   leadership?: Leadership[];
+  references?: Reference[];
 }
 
 export type TemplateType = 'classic' | 'modern' | 'sidebar' | 'creative';

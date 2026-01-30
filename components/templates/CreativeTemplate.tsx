@@ -15,6 +15,9 @@ export default function CreativeTemplate({ data, style }: CreativeTemplateProps)
       {/* Gold Header */}
       <div className="p-8 text-center text-white" style={{ backgroundColor: accentColor }}>
         <h1 className="text-4xl font-bold mb-2">{personalInfo.fullName || 'Your Name'}</h1>
+        {personalInfo.career && (
+          <p className="text-xs font-semibold tracking-widest uppercase mb-2">{personalInfo.career}</p>
+        )}
         {personalInfo.title && (
           <p className="text-lg tracking-widest">{personalInfo.title}</p>
         )}

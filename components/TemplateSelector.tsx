@@ -51,7 +51,7 @@ export default function TemplateSelector({ selectedTemplate, onTemplateChange }:
             aria-label={`Select ${template.name} template`}
           >
             {/* Template Image Container */}
-            <div className="relative w-full h-80 bg-gray-100 overflow-hidden">
+            <div className="relative w-full h-120 bg-gray-100 overflow-hidden">
               <Image
                 src={template.image}
                 alt={`${template.name} template preview`}

@@ -1,7 +1,16 @@
 // components/StyleCustomizer.tsx
 'use client';
 
+import { useState } from 'react';
 import { ResumeStyle } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 interface StyleCustomizerProps {
   style: ResumeStyle;
@@ -43,9 +52,13 @@ const fontFamilies = [
 ];
 
 export default function StyleCustomizer({ style, onStyleChange, onClose }: StyleCustomizerProps) {
+  const [fontOpen, setFontOpen] = useState(false);
+  
   const updateStyle = (updates: Partial<ResumeStyle>) => {
     onStyleChange({ ...style, ...updates });
   };
+
+  const currentFont = fontFamilies.find(f => f.value === (style.fontFamily || 'Inter, sans-serif'));
 
   return (
     <div className="no-print">
@@ -133,22 +146,36 @@ export default function StyleCustomizer({ style, onStyleChange, onClose }: Style
 
         {/* Font Family */}
         <div>
-          <label htmlFor="font-family" className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Font Family
           </label>
-          <select
-            id="font-family"
-            value={style.fontFamily || 'Inter, sans-serif'}
-            onChange={(e) => updateStyle({ fontFamily: e.target.value })}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            style={{ fontFamily: style.fontFamily || 'Inter, sans-serif' }}
-          >
-            {fontFamilies.map((font) => (
-              <option key={font.value} value={font.value} style={{ fontFamily: font.value }}>
-                {font.name}
-              </option>
-            ))}
-          </select>
+          <DropdownMenu open={fontOpen} onOpenChange={setFontOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full justify-between"
+                style={{ fontFamily: style.fontFamily || 'Inter, sans-serif' }}
+              >
+                {currentFont?.name || 'Select Font'}
+                <ChevronDown className="w-4 h-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-full">
+              {fontFamilies.map((font) => (
+                <DropdownMenuItem
+                  key={font.value}
+                  onClick={() => {
+                    updateStyle({ fontFamily: font.value });
+                    setFontOpen(false);
+                  }}
+                  style={{ fontFamily: font.value }}
+                  className={style.fontFamily === font.value ? 'bg-blue-50' : ''}
+                >
+                  {font.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Font Size */}

@@ -17,6 +17,11 @@ export default function ClassicTemplate({ data, style }: ClassicTemplateProps) {
         <h1 className="text-4xl font-bold mb-2" style={{ color: accentColor }}>
           {personalInfo.fullName || 'Your Name'}
         </h1>
+        {personalInfo.career && (
+          <p className="text-sm font-semibold text-gray-600 mb-3 tracking-wide uppercase">
+            {personalInfo.career}
+          </p>
+        )}
         {personalInfo.title && (
           <p className="text-lg text-gray-700 mb-3">
             {personalInfo.title}

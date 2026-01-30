@@ -85,6 +85,36 @@ export default function PersonalInfoForm({ data, onChange }: PersonalInfoFormPro
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+            Job Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            value={data.title || ''}
+            onChange={(e) => handleChange('title', e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            placeholder="e.g., Senior Software Engineer"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="career" className="block text-sm font-medium text-gray-700 mb-1">
+            Career / Job Role
+          </label>
+          <input
+            type="text"
+            id="career"
+            value={data.career || ''}
+            onChange={(e) => handleChange('career', e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            placeholder="e.g., Software Engineer, Data Analyst"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
           <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 mb-1">
             LinkedIn
           </label>
