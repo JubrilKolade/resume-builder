@@ -6,6 +6,9 @@ import PersonalInfoForm from '@/components/forms/PersonalInfoForm';
 import WorkExperienceForm from '@/components/forms/WorkExperienceForm';
 import EducationForm from '@/components/forms/EducationForm';
 import SkillsForm from '@/components/forms/SkillsForm';
+import CertificationsForm from '@/components/forms/CertificationsForm';
+import CommunityForm from '@/components/forms/CommunityForm';
+import LeadershipForm from '@/components/forms/LeadershipForm';
 
 interface ResumeFormProps {
   data: ResumeData;
@@ -17,6 +20,9 @@ const formSections = [
   { id: 'work', label: 'Work Experience' },
   { id: 'education', label: 'Education' },
   { id: 'skills', label: 'Skills' },
+  { id: 'certifications', label: 'Certifications' },
+  { id: 'community', label: 'Community' },
+  { id: 'leadership', label: 'Leadership' },
 ];
 
 export default function ResumeForm({ data, onChange }: ResumeFormProps) {
@@ -36,6 +42,18 @@ export default function ResumeForm({ data, onChange }: ResumeFormProps) {
 
   const handleSkillsChange = (skills: any) => {
     onChange({ skills });
+  };
+
+  const handleCertificationsChange = (certifications: any) => {
+    onChange({ certifications });
+  };
+
+  const handleCommunityChange = (community: any) => {
+    onChange({ community });
+  };
+
+  const handleLeadershipChange = (leadership: any) => {
+    onChange({ leadership });
   };
 
   return (
@@ -81,6 +99,24 @@ export default function ResumeForm({ data, onChange }: ResumeFormProps) {
           <SkillsForm
             data={data.skills}
             onChange={handleSkillsChange}
+          />
+        )}
+        {activeSection === 'certifications' && (
+          <CertificationsForm
+            data={data.certifications || []}
+            onChange={handleCertificationsChange}
+          />
+        )}
+        {activeSection === 'community' && (
+          <CommunityForm
+            data={data.community || []}
+            onChange={handleCommunityChange}
+          />
+        )}
+        {activeSection === 'leadership' && (
+          <LeadershipForm
+            data={data.leadership || []}
+            onChange={handleLeadershipChange}
           />
         )}
       </div>

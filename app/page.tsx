@@ -52,15 +52,18 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            <Card>
-              <CardHeader>
-                <CardTitle>Select a Template</CardTitle>
-                <CardDescription>Choose from our professionally designed templates</CardDescription>
+            <Card className="border-0 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 border-b">
+                <CardTitle className="text-2xl">Select Your Resume Template</CardTitle>
+                <CardDescription className="text-base mt-2">
+                  Choose from professionally designed templates. You can change this anytime.
+                </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-8">
                 <TemplateSelector 
                   selectedTemplate={selectedTemplate}
                   onTemplateChange={setSelectedTemplate}
+                  style={resumeStyle}
                 />
               </CardContent>
             </Card>
@@ -68,21 +71,21 @@ export default function Home() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Customization</CardTitle>
+            <Card className="border-0 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b">
+                <CardTitle>Quick Customization</CardTitle>
                 <CardDescription>Personalize your resume's appearance</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 pt-6">
                 <div>
-                  <label htmlFor="font-select" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="font-select" className="block text-sm font-semibold text-gray-700 mb-3">
                     Font Family
                   </label>
                   <select
                     id="font-select"
                     value={selectedFont}
                     onChange={(e) => setSelectedFont(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full rounded-lg border border-gray-300 py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   >
                     {fonts.map((font) => (
                       <option key={font.id} value={font.value}>
@@ -93,8 +96,8 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Color Theme
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Accent Color
                   </label>
                   <div className="grid grid-cols-5 gap-2">
                     {themes.map((theme) => (
@@ -102,7 +105,7 @@ export default function Home() {
                         key={theme.id}
                         type="button"
                         onClick={() => setSelectedTheme(theme.id)}
-                        className={`h-10 rounded-md border-2 ${selectedTheme === theme.id ? 'ring-2 ring-offset-2 ring-blue-500' : 'border-transparent'}`}
+                        className={`h-10 rounded-lg border-2 transition-all ${selectedTheme === theme.id ? 'ring-2 ring-offset-2 ring-blue-500 border-blue-400' : 'border-gray-200 hover:border-gray-300'}`}
                         style={{ backgroundColor: theme.colors.primary }}
                         title={theme.name}
                         aria-label={theme.name}
@@ -116,23 +119,26 @@ export default function Home() {
               <CardFooter>
                 <Button 
                   onClick={handleContinue}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all"
                 >
                   Continue to Edit
                 </Button>
               </CardFooter>
             </Card>
 
-            <Card>
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50">
               <CardHeader>
-                <CardTitle>Need Help?</CardTitle>
+                <CardTitle className="text-lg">💡 Pro Tips</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-4">
-                  Our templates are designed to help you create a professional resume in minutes.
+              <CardContent className="space-y-3">
+                <p className="text-sm text-gray-700">
+                  ✓ All templates are fully customizable
                 </p>
-                <p className="text-sm text-gray-600">
-                  You can always change your template and style later in the editor.
+                <p className="text-sm text-gray-700">
+                  ✓ Change fonts and colors anytime
+                </p>
+                <p className="text-sm text-gray-700">
+                  ✓ Switch templates during editing
                 </p>
               </CardContent>
             </Card>

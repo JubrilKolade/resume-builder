@@ -35,10 +35,6 @@ export default function PreviewPage() {
     router.push('/download');
   };
 
-  const toggleCustomize = () => {
-    setIsCustomizing(!isCustomizing);
-  };
-
   const handleStyleChange = (updates: Partial<ResumeStyle>) => {
     setResumeStyle({
       ...resumeStyle,
@@ -59,29 +55,10 @@ export default function PreviewPage() {
           <div className="lg:col-span-2">
             <Card className="mb-8">
               <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle>Resume Preview</CardTitle>
-                    <CardDescription>Template: {selectedTemplate}</CardDescription>
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={toggleCustomize}
-                  >
-                    {isCustomizing ? 'Hide Customization' : 'Customize Style'}
-                  </Button>
-                </div>
+                <CardTitle>Resume Preview</CardTitle>
+                <CardDescription>Template: {selectedTemplate}</CardDescription>
               </CardHeader>
               <CardContent>
-                {isCustomizing && (
-                  <StyleCustomizer 
-                    style={resumeStyle}
-                    onStyleChange={handleStyleChange}
-                    onClose={() => setIsCustomizing(false)}
-                  />
-                )}
-                
                 <div ref={resumeRef} className="print-page">
                   <ResumePreview 
                     data={resumeData} 
@@ -101,13 +78,15 @@ export default function PreviewPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <div className="flex items-center">
-                    <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
-                      1
-                    </div>
-                    <div className="ml-3">
-                      <div className="text-sm font-medium text-gray-500">Template</div>
-                      <div className="text-xs text-gray-400">Select a template</div>
+                  <div className="ml-5 pl-4 border-l-2 border-blue-200">
+                    <div className="flex items-center py-2">
+                      <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                        1
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-blue-600">Template</div>
+                        <div className="text-xs text-blue-500">Select desired template</div>
+                      </div>
                     </div>
                   </div>
                   
@@ -147,6 +126,19 @@ export default function PreviewPage() {
                     </div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Customize Style</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <StyleCustomizer 
+                  style={resumeStyle}
+                  onStyleChange={handleStyleChange}
+                  onClose={() => {}}
+                />
               </CardContent>
             </Card>
 

@@ -2,11 +2,22 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import ResumeForm from '@/components/ResumeForm';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useResume } from '@/contexts/ResumeContext';
 import { ResumeData, AppState } from '@/types/resume';
+
+const getTemplateImage = (template: string): string => {
+  const imageMap: Record<string, string> = {
+    classic: '/classic-template.png',
+    modern: '/modern-template.png',
+    sidebar: '/sidebar-template.png',
+    creative: '/creative-template.png',
+  };
+  return imageMap[template] || '/classic-template.png';
+};
 
 export default function EditPage() {
   const router = useRouter();
@@ -93,22 +104,26 @@ export default function EditPage() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Template Selected</CardTitle>
-                <CardDescription>Current template: {selectedTemplate}</CardDescription>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Template Preview</span>
+                  <span className="text-lg font-bold text-blue-600 capitalize">
+                    {selectedTemplate}
+                  </span>
+                </CardTitle>
+                <CardDescription>Your selected template</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="aspect-[1/1.4142] bg-white border border-gray-200 rounded-md overflow-hidden shadow-sm">
-                  <div className="h-full flex items-center justify-center p-4 bg-gray-50">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold mb-2">
-                        {selectedTemplate.charAt(0).toUpperCase() + selectedTemplate.slice(1)}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        Template Preview
-                      </div>
-                    </div>
-                  </div>
+              <CardContent className="space-y-4">
+                <div className="relative w-full h-80 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
+                  <Image
+                    src={getTemplateImage(selectedTemplate)}
+                    alt={`${selectedTemplate} template preview`}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
+                <p className="text-xs text-gray-500 text-center">
+                  Switch templates from the previous page or preview your resume below
+                </p>
               </CardContent>
             </Card>
 
@@ -118,13 +133,15 @@ export default function EditPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <div className="flex items-center">
-                    <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
-                      1
-                    </div>
-                    <div className="ml-3">
-                      <div className="text-sm font-medium text-gray-900">Template</div>
-                      <div className="text-xs text-gray-500">Select a template</div>
+                  <div className="ml-5 pl-4 border-l-2 border-blue-200">
+                    <div className="flex items-center py-2">
+                      <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                        1
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-blue-600">Template</div>
+                        <div className="text-xs text-blue-500">Select desired template</div>
+                      </div>
                     </div>
                   </div>
                   

@@ -2,7 +2,7 @@ import { AppState } from '@/types/resume';
 import { generateId } from '@/utils/helpers';
 
 export const defaultResumeData: AppState = {
-  selectedTemplate: 'modern',
+  selectedTemplate: 'classic',
   style: {
     accentColor: '#0ea5e9',
     fontFamily: 'Inter',
@@ -25,12 +25,14 @@ export const defaultResumeData: AppState = {
     education: [],
     skills: [],
     certifications: [],
+    community: [],
+    leadership: [],
     projects: [],
   },
 };
 
 export const sampleResumeData: AppState = {
-  selectedTemplate: 'modern',
+  selectedTemplate: 'classic',
   style: {
     accentColor: '#0ea5e9',
     fontFamily: 'Inter',
@@ -108,6 +110,29 @@ export const sampleResumeData: AppState = {
         name: 'AWS Certified Solutions Architect',
         issuer: 'Amazon Web Services',
         date: '2023-06',
+      },
+    ],
+    community: [
+      {
+        id: generateId(),
+        organization: 'Tech Community SF',
+        role: 'Event Organizer',
+        location: 'San Francisco, CA',
+        description: 'Organized monthly meetups bringing together 100+ local developers to share knowledge and network.',
+        startDate: '2022-01',
+        endDate: '',
+        current: true,
+      },
+    ],
+    leadership: [
+      {
+        id: generateId(),
+        title: 'Team Lead',
+        organization: 'Tech Innovations Inc.',
+        description: 'Led a team of 4 engineers, responsible for project planning, code reviews, and mentoring junior developers.',
+        startDate: '2022-06',
+        endDate: '',
+        current: true,
       },
     ],
     projects: [

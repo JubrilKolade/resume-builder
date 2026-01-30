@@ -55,6 +55,27 @@ export interface Certification {
   date: string;
 }
 
+export interface Community {
+  id: string;
+  organization: string;
+  role: string;
+  location?: string;
+  description?: string;
+  startDate: string;
+  endDate: string;
+  current: boolean;
+}
+
+export interface Leadership {
+  id: string;
+  title: string;
+  organization: string;
+  description?: string;
+  startDate: string;
+  endDate: string;
+  current: boolean;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -71,9 +92,11 @@ export interface ResumeData {
   certifications?: Certification[];
   projects?: Project[];
   languages?: Language[];
+  community?: Community[];
+  leadership?: Leadership[];
 }
 
-export type TemplateType = 'modern' | 'classic' | 'professional' | 'creative' | 'minimalist' | 'executive';
+export type TemplateType = 'classic' | 'modern' | 'sidebar' | 'creative';
 
 export interface ResumeStyle {
   // Color Scheme

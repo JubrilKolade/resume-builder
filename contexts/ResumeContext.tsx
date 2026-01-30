@@ -35,7 +35,7 @@ export const ResumeProvider = ({ children }: { children: ReactNode }) => {
     return defaultResumeData;
   });
 
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('professional');
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('classic');
   
   const [resumeStyle, setResumeStyle] = useState<ResumeStyle>(() => {
     if (typeof window !== 'undefined') {

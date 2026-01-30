@@ -2,7 +2,6 @@
 'use client';
 
 import { ResumeStyle } from '@/types/resume';
-import { X } from 'lucide-react';
 
 interface StyleCustomizerProps {
   style: ResumeStyle;
@@ -49,44 +48,39 @@ export default function StyleCustomizer({ style, onStyleChange, onClose }: Style
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8 no-print">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900">Customize Style</h2>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-gray-600 transition-colors"
-          aria-label="Close customizer"
-        >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-
+    <div className="no-print">
       <div className="space-y-6">
         {/* Accent Color */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-3">
             Accent Color
           </label>
-          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-3">
+          <div className="flex items-center gap-4">
+            <input
+              type="color"
+              value={style.accentColor || '#0ea5e9'}
+              onChange={(e) => updateStyle({ accentColor: e.target.value })}
+              className="w-20 h-12 rounded-lg cursor-pointer border border-gray-300"
+              aria-label="Select accent color"
+            />
+            <div className="flex-1">
+              <p className="text-sm text-gray-600 font-mono">{style.accentColor || '#0ea5e9'}</p>
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-2">
             {accentColors.map((color) => (
               <button
                 key={color.value}
                 onClick={() => updateStyle({ accentColor: color.value })}
-                className={`relative w-full aspect-square rounded-lg transition-all ${
+                className={`w-full aspect-square rounded-lg transition-all border-2 ${
                   style.accentColor === color.value
-                    ? 'ring-2 ring-offset-2 ring-gray-900'
-                    : 'hover:scale-110'
+                    ? 'border-gray-900 ring-2 ring-offset-2 ring-gray-900'
+                    : 'border-gray-200 hover:border-gray-400'
                 }`}
                 style={{ backgroundColor: color.value }}
                 aria-label={`Select ${color.name} accent color`}
                 title={color.name}
-              >
-                {style.accentColor === color.value && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-4 h-4 bg-white rounded-full" />
-                  </div>
-                )}
-              </button>
+              />
             ))}
           </div>
         </div>
@@ -139,25 +133,22 @@ export default function StyleCustomizer({ style, onStyleChange, onClose }: Style
 
         {/* Font Family */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label htmlFor="font-family" className="block text-sm font-medium text-gray-700 mb-2">
             Font Family
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <select
+            id="font-family"
+            value={style.fontFamily || 'Inter, sans-serif'}
+            onChange={(e) => updateStyle({ fontFamily: e.target.value })}
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            style={{ fontFamily: style.fontFamily || 'Inter, sans-serif' }}
+          >
             {fontFamilies.map((font) => (
-              <button
-                key={font.value}
-                onClick={() => updateStyle({ fontFamily: font.value })}
-                className={`px-4 py-3 rounded-lg border-2 transition-all text-sm font-medium ${
-                  style.fontFamily === font.value
-                    ? 'border-blue-600 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                }`}
-                style={{ fontFamily: font.value }}
-              >
+              <option key={font.value} value={font.value} style={{ fontFamily: font.value }}>
                 {font.name}
-              </button>
+              </option>
             ))}
-          </div>
+          </select>
         </div>
 
         {/* Font Size */}

@@ -4,58 +4,51 @@ import { formatDate } from '@/utils/helpers';
 interface ClassicTemplateProps {
   data: ResumeData;
   style: ResumeStyle;
-  onDownload?: () => void;
 }
 
-export default function ClassicTemplate({ data, style, onDownload }: ClassicTemplateProps) {
-  const { personalInfo, workExperience, education, skills } = data;
-  const accentColor = style.accentColor || '#1f2937';
-  const textColor = style.textColor || '#1f2937';
-  const bgColor = style.backgroundColor || '#ffffff';
-  
-  const spacingClass =
-    style.spacing === 'compact'
-      ? 'space-y-2'
-      : style.spacing === 'relaxed'
-      ? 'space-y-5'
-      : 'space-y-3';
-
-  const sectionSpacing =
-    style.spacing === 'compact' ? 'mb-5' : style.spacing === 'relaxed' ? 'mb-8' : 'mb-6';
+export default function ClassicTemplate({ data, style }: ClassicTemplateProps) {
+  const { personalInfo, workExperience, education, skills, certifications, community, leadership } = data;
+  const accentColor = style.accentColor || '#9d6b2a';
 
   return (
     <div className="max-w-[850px] mx-auto p-8 md:p-12 bg-white">
       {/* Header */}
-      <header className={`${sectionSpacing} text-center pb-4`} style={{ borderBottom: `2px solid ${accentColor}` }}>
-        <h1 className="text-3xl font-bold mb-2" style={{ color: textColor }}>
-          {personalInfo.fullName || 'YOUR NAME'}
+      <header className="text-center mb-8 pb-6 border-b-2" style={{ borderColor: accentColor }}>
+        <h1 className="text-4xl font-bold mb-2" style={{ color: accentColor }}>
+          {personalInfo.fullName || 'Your Name'}
         </h1>
-        
-        <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm" style={{ color: textColor }}>
-          {personalInfo.email && <span>{personalInfo.email}</span>}
-          {personalInfo.email && personalInfo.phone && <span style={{ color: accentColor }}>•</span>}
-          {personalInfo.phone && <span>{personalInfo.phone}</span>}
-          {personalInfo.phone && personalInfo.location && <span style={{ color: accentColor }}>•</span>}
-          {personalInfo.location && <span>{personalInfo.location}</span>}
-        </div>
-
-        {(personalInfo.linkedin || personalInfo.website) && (
-          <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm" style={{ color: textColor }}>
-            <div style={{ marginTop: '0.25rem' }} />
-            {personalInfo.linkedin && <span>{personalInfo.linkedin}</span>}
-            {personalInfo.linkedin && personalInfo.website && <span style={{ color: accentColor }}>•</span>}
-            {personalInfo.website && <span>{personalInfo.website}</span>}
-          </div>
+        {personalInfo.title && (
+          <p className="text-lg text-gray-700 mb-3">
+            {personalInfo.title}
+          </p>
         )}
+        <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+          {personalInfo.location && <span>{personalInfo.location}</span>}
+          {personalInfo.email && (
+            <span>
+              <a href={`mailto:${personalInfo.email}`} className="hover:underline">
+                {personalInfo.email}
+              </a>
+            </span>
+          )}
+          {personalInfo.phone && <span>{personalInfo.phone}</span>}
+          {personalInfo.linkedin && (
+            <span>
+              <a href={`https://${personalInfo.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                {personalInfo.linkedin}
+              </a>
+            </span>
+          )}
+        </div>
       </header>
 
-      {/* Professional Summary */}
+      {/* Summary */}
       {personalInfo.summary && (
-        <section className={sectionSpacing}>
-          <h2 className="text-lg font-bold mb-2 uppercase tracking-wide" style={{ color: textColor }}>
-            Professional Summary
+        <section className="mb-6">
+          <h2 className="text-sm font-bold mb-3 pb-2 border-b-2" style={{ color: accentColor, borderColor: accentColor }}>
+            SUMMARY
           </h2>
-          <p className="leading-relaxed text-justify" style={{ color: textColor }}>
+          <p className="text-gray-800 leading-relaxed text-sm">
             {personalInfo.summary}
           </p>
         </section>
@@ -63,37 +56,31 @@ export default function ClassicTemplate({ data, style, onDownload }: ClassicTemp
 
       {/* Work Experience */}
       {workExperience.length > 0 && (
-        <section className={sectionSpacing}>
-          <h2 className="text-lg font-bold mb-3 text-gray-900 uppercase tracking-wide">
-            Professional Experience
+        <section className="mb-6">
+          <h2 className="text-sm font-bold mb-3 pb-2 border-b-2" style={{ color: accentColor, borderColor: accentColor }}>
+            WORK EXPERIENCE
           </h2>
-          <div className={spacingClass}>
+          <div className="space-y-4">
             {workExperience.map((exp) => (
-              <div key={exp.id} className="mb-4">
-                <div className="flex justify-between items-baseline mb-1">
-                  <h3 className="text-base font-bold text-gray-900">
-                    {exp.position || 'Position'}
-                  </h3>
-                  <div className="text-sm text-gray-600 whitespace-nowrap ml-4">
+              <div key={exp.id}>
+                <div className="flex justify-between items-start mb-1">
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{exp.position || 'Position'}</h3>
+                    <p className="text-gray-700 text-sm">{exp.company || 'Company'} • {exp.location || 'Location'}</p>
+                  </div>
+                  <span className="text-sm text-gray-600 whitespace-nowrap ml-4">
                     {exp.startDate && formatDate(exp.startDate)}
                     {' - '}
                     {exp.current ? 'Present' : exp.endDate ? formatDate(exp.endDate) : ''}
-                  </div>
+                  </span>
                 </div>
-                <p className="text-gray-800 italic mb-2">
-                  {exp.company || 'Company'}
-                  {exp.location && ` | ${exp.location}`}
-                </p>
-                {exp.description.length > 0 && exp.description[0] && (
-                  <ul className="list-disc list-outside ml-5 space-y-1">
-                    {exp.description.map(
-                      (desc, idx) =>
-                        desc && (
-                          <li key={idx} className="text-gray-700 text-sm">
-                            {desc}
-                          </li>
-                        )
-                    )}
+                {exp.description.length > 0 && (
+                  <ul className="list-disc list-inside mt-2 space-y-1">
+                    {exp.description.map((desc, idx) => desc && (
+                      <li key={idx} className="text-gray-700 text-sm ml-2">
+                        {desc}
+                      </li>
+                    ))}
                   </ul>
                 )}
               </div>
@@ -104,31 +91,24 @@ export default function ClassicTemplate({ data, style, onDownload }: ClassicTemp
 
       {/* Education */}
       {education.length > 0 && (
-        <section className={sectionSpacing}>
-          <h2 className="text-lg font-bold mb-3 text-gray-900 uppercase tracking-wide">
-            Education
+        <section className="mb-6">
+          <h2 className="text-sm font-bold mb-3 pb-2 border-b-2" style={{ color: accentColor, borderColor: accentColor }}>
+            EDUCATION
           </h2>
-          <div className={spacingClass}>
+          <div className="space-y-3">
             {education.map((edu) => (
-              <div key={edu.id} className="mb-3">
-                <div className="flex justify-between items-baseline">
+              <div key={edu.id}>
+                <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-base font-bold text-gray-900">
-                      {edu.degree || 'Degree'} {edu.field && `in ${edu.field}`}
-                    </h3>
-                    <p className="text-gray-800 italic">
-                      {edu.institution || 'Institution'}
-                      {edu.location && ` | ${edu.location}`}
-                    </p>
-                    {edu.gpa && (
-                      <p className="text-gray-700 text-sm mt-1">GPA: {edu.gpa}</p>
-                    )}
+                    <h3 className="font-semibold text-gray-900">{edu.degree || 'Degree'}</h3>
+                    <p className="text-gray-700 text-sm">{edu.institution || 'Institution'}</p>
+                    {edu.gpa && <p className="text-gray-600 text-sm">GPA: {edu.gpa}</p>}
                   </div>
-                  <div className="text-sm text-gray-600 whitespace-nowrap ml-4">
+                  <span className="text-sm text-gray-600 whitespace-nowrap ml-4">
                     {edu.startDate && formatDate(edu.startDate)}
                     {' - '}
                     {edu.current ? 'Present' : edu.endDate ? formatDate(edu.endDate) : ''}
-                  </div>
+                  </span>
                 </div>
               </div>
             ))}
@@ -138,16 +118,66 @@ export default function ClassicTemplate({ data, style, onDownload }: ClassicTemp
 
       {/* Skills */}
       {skills.length > 0 && (
-        <section className={sectionSpacing}>
-          <h2 className="text-lg font-bold mb-3 text-gray-900 uppercase tracking-wide">
-            Skills
+        <section className="mb-6">
+          <h2 className="text-sm font-bold mb-3 pb-2 border-b-2" style={{ color: accentColor, borderColor: accentColor }}>
+            ADDITIONAL SKILLS
           </h2>
-          <div className="text-gray-700">
-            {skills.map((skill, index) => (
-              <span key={skill.id}>
+          <ul className="list-disc list-inside space-y-1">
+            {skills.map((skill) => (
+              <li key={skill.id} className="text-gray-700 text-sm ml-2">
                 {skill.name}
-                {index < skills.length - 1 && ' • '}
-              </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Certifications */}
+      {certifications && certifications.length > 0 && (
+        <section className="mb-6">
+          <h2 className="text-sm font-bold mb-3 pb-2 border-b-2" style={{ color: accentColor, borderColor: accentColor }}>
+            CERTIFICATIONS
+          </h2>
+          <div className="space-y-2">
+            {certifications.map((cert) => (
+              <div key={cert.id}>
+                <p className="font-semibold text-gray-900 text-sm">{cert.name}</p>
+                <p className="text-gray-700 text-sm">{cert.issuer}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Community */}
+      {community && community.length > 0 && (
+        <section className="mb-6">
+          <h2 className="text-sm font-bold mb-3 pb-2 border-b-2" style={{ color: accentColor, borderColor: accentColor }}>
+            COMMUNITY
+          </h2>
+          <div className="space-y-3">
+            {community.map((item) => (
+              <div key={item.id}>
+                <p className="font-semibold text-gray-900">{item.role}</p>
+                <p className="text-gray-700 text-sm">{item.organization}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Leadership */}
+      {leadership && leadership.length > 0 && (
+        <section className="mb-6">
+          <h2 className="text-sm font-bold mb-3 pb-2 border-b-2" style={{ color: accentColor, borderColor: accentColor }}>
+            LEADERSHIP
+          </h2>
+          <div className="space-y-3">
+            {leadership.map((item) => (
+              <div key={item.id}>
+                <p className="font-semibold text-gray-900">{item.title}</p>
+                <p className="text-gray-700 text-sm">{item.organization}</p>
+              </div>
             ))}
           </div>
         </section>
