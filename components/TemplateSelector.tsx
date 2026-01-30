@@ -61,7 +61,7 @@ export default function TemplateSelector({ selectedTemplate, onTemplateChange }:
               
               {/* Selection Badge */}
               {selectedTemplate === template.id && (
-                <div className="absolute top-4 right-4 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full p-2.5 shadow-lg z-20 animate-pulse">
+                <div className="absolute top-4 right-4 bg-linear-to-br from-blue-600 to-blue-700 text-white rounded-full p-2.5 shadow-lg z-20 animate-pulse">
                   <Check className="w-5 h-5" />
                 </div>
               )}

@@ -11,7 +11,7 @@ export default function CreativeTemplate({ data, style }: CreativeTemplateProps)
   const accentColor = style.accentColor || '#d97706';
 
   return (
-    <div className="max-w-[850px] mx-auto bg-white" style={{ minHeight: '1100px' }}>
+    <div className="max-w-212.5 mx-auto bg-white" style={{ minHeight: '1100px' }}>
       {/* Gold Header */}
       <div className="p-8 text-center text-white" style={{ backgroundColor: accentColor }}>
         <h1 className="text-4xl font-bold mb-2">{personalInfo.fullName || 'Your Name'}</h1>
@@ -64,12 +64,12 @@ export default function CreativeTemplate({ data, style }: CreativeTemplateProps)
                 </div>
               )}
               {personalInfo.email && (
-                <div className="break-words">
+                <div className="wrap-break-word">
                   <span className="font-bold">Email:</span> {personalInfo.email}
                 </div>
               )}
               {personalInfo.website && (
-                <div className="break-words">
+                <div className="wrap-break-word">
                   <span className="font-bold">Website:</span> {personalInfo.website}
                 </div>
               )}

@@ -11,7 +11,7 @@ export default function ClassicTemplate({ data, style }: ClassicTemplateProps) {
   const accentColor = style.accentColor || '#9d6b2a';
 
   return (
-    <div className="max-w-[850px] mx-auto p-8 md:p-12 bg-white">
+    <div className="max-w-212.5 mx-auto p-8 md:p-12 bg-white">
       {/* Header */}
       <header className="text-center mb-8 pb-6 border-b-2" style={{ borderColor: accentColor }}>
         <h1 className="text-4xl font-bold mb-2" style={{ color: accentColor }}>

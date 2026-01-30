@@ -119,7 +119,7 @@ export default function TemplatePreview({ templateId, style, size = 'medium' }: 
   return (
     <div className={`${containerHeight[size]} bg-white border border-gray-300 rounded-lg overflow-hidden shadow-md relative`}>
       <div className={`${containerClasses[size]}`}>
-        <div className="w-[850px]">
+        <div className="w-212.5">
           {renderTemplate()}
         </div>
       </div>

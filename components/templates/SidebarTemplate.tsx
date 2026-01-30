@@ -10,7 +10,7 @@ export default function SidebarTemplate({ data, style }: SidebarTemplateProps) {
   const { personalInfo, workExperience, education, skills, certifications, community, leadership } = data;
 
   return (
-    <div className="max-w-[850px] mx-auto bg-white flex" style={{ minHeight: '1100px' }}>
+    <div className="max-w-212.5 mx-auto bg-white flex" style={{ minHeight: '1100px' }}>
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white p-8 flex flex-col">
         {/* Profile Image */}
@@ -39,13 +39,13 @@ export default function SidebarTemplate({ data, style }: SidebarTemplateProps) {
               </div>
             )}
             {personalInfo.email && (
-              <div className="flex items-start gap-2 break-words">
+              <div className="flex items-start gap-2 wrap-break-word">
                 <span>✉️</span>
                 <span className="text-xs">{personalInfo.email}</span>
               </div>
             )}
             {personalInfo.website && (
-              <div className="flex items-start gap-2 break-words">
+              <div className="flex items-start gap-2 wrap-break-word">
                 <span>🌐</span>
                 <span className="text-xs">{personalInfo.website}</span>
               </div>

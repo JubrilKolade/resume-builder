@@ -5,13 +5,8 @@ import { useState } from 'react';
 import TemplateSelector from '@/components/TemplateSelector';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { useResume } from '@/contexts/ResumeContext';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
 
 export default function Home() {
@@ -142,14 +137,14 @@ export default function Home() {
               <CardFooter>
                 <Button 
                   onClick={handleContinue}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all"
+                  className="w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all"
                 >
                   Continue to Edit
                 </Button>
               </CardFooter>
             </Card>
 
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50">
+            <Card className="border-0 shadow-lg bg-linear-to-br from-blue-50 to-indigo-50">
               <CardHeader>
                 <CardTitle className="text-lg">💡 Pro Tips</CardTitle>
               </CardHeader>
