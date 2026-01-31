@@ -7,7 +7,15 @@ import ResumeForm from '@/components/ResumeForm';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useResume } from '@/contexts/ResumeContext';
-import { ResumeData, AppState } from '@/types/resume';
+import { ResumeData, AppState, TemplateType } from '@/types/resume';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
+import { templates } from '@/utils/templates';
 
 const getTemplateImage = (template: string): string => {
   const imageMap: Record<string, string> = {
@@ -21,12 +29,13 @@ const getTemplateImage = (template: string): string => {
 
 export default function EditPage() {
   const router = useRouter();
-  const { 
-    resumeData, 
-    setResumeData, 
-    selectedTemplate, 
+  const {
+    resumeData,
+    setResumeData,
+    selectedTemplate,
+    setSelectedTemplate,
     resumeStyle,
-    setCurrentStep 
+    setCurrentStep
   } = useResume();
 
   // Update current step on mount
@@ -43,7 +52,7 @@ export default function EditPage() {
       }
     });
   };
-  
+
   // Ensure we have the required resume data structure
   useEffect(() => {
     if (!resumeData.resumeData) {
@@ -92,8 +101,8 @@ export default function EditPage() {
                 <CardDescription>Fill in your personal and professional information</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResumeForm 
-                  data={resumeData.resumeData} 
+                <ResumeForm
+                  data={resumeData.resumeData}
                   onChange={handleResumeDataChange}
                 />
               </CardContent>
@@ -106,9 +115,25 @@ export default function EditPage() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>Template Preview</span>
-                  <span className="text-lg font-bold text-blue-600 capitalize">
-                    {selectedTemplate}
-                  </span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-blue-600 capitalize outline-none hover:text-blue-700">
+                      {selectedTemplate}
+                      <ChevronDown className="h-4 w-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {templates.map((template) => (
+                        <DropdownMenuItem
+                          key={template.id}
+                          onClick={() => {
+                            setSelectedTemplate(template.id);
+                          }}
+                          className="capitalize cursor-pointer"
+                        >
+                          {template.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </CardTitle>
                 <CardDescription>Your selected template</CardDescription>
               </CardHeader>
@@ -144,7 +169,7 @@ export default function EditPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="ml-5 pl-4 border-l-2 border-blue-200">
                     <div className="flex items-center py-2">
                       <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
@@ -183,13 +208,13 @@ export default function EditPage() {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-                <Button 
+                <Button
                   variant="outline"
                   onClick={handleBack}
                 >
                   Back
                 </Button>
-                <Button 
+                <Button
                   onClick={handleContinue}
                   className="bg-blue-600 hover:bg-blue-700"
                 >

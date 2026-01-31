@@ -126,7 +126,6 @@ const ResumePreviewComponent: React.FC<ResumePreviewProps> = ({ data: inputData,
       const safeName = data.personalInfo?.fullName
         ? data.personalInfo.fullName.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_')
         : 'Resume';
-
       const fileName = `${safeName}_${new Date().toISOString().split('T')[0]}.pdf`;
 
       // Save the PDF
