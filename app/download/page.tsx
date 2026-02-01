@@ -5,20 +5,24 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useResume } from '@/contexts/ResumeContext';
-import ResumePreview from '@/components/ResumePreview';
+import ResumePreview, { ResumePreviewHandle } from '@/components/ResumePreview';
+import { generatePDF } from '../../utils/pdf-generator';
+import { generateDocx } from '../../utils/docx-generator';
+
 
 export default function DownloadPage() {
   const router = useRouter();
-  const { 
-    resumeData, 
-    selectedTemplate, 
+  const {
+    resumeData: appState,
+    selectedTemplate,
     resumeStyle,
-    setCurrentStep 
+    setCurrentStep,
+    getResumeData
   } = useResume();
-  
+
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadFormat, setDownloadFormat] = useState<'pdf' | 'docx' | 'txt'>('pdf');
-  const resumeRef = useRef<HTMLDivElement>(null);
+  const resumeRef = useRef<ResumePreviewHandle>(null);
 
   // Update current step on mount
   useEffect(() => {
@@ -29,18 +33,44 @@ export default function DownloadPage() {
     router.push('/preview');
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     setIsDownloading(true);
-    
-    // Simulate download process
-    setTimeout(() => {
-      console.log(`Downloading resume as ${downloadFormat.toUpperCase()}...`);
-      // Actual download implementation would go here
+
+    // Get clean ResumeData structure for generators
+    const data = getResumeData();
+
+    try {
+      if (downloadFormat === 'pdf') {
+        const element = resumeRef.current?.getElement();
+        if (element) {
+          // Pass the resumeData to generate correct filename
+          await generatePDF(element, data);
+        } else {
+          console.error("Resume element reference is missing");
+          alert("Could not load resume for PDF generation. Please reload and try again.");
+        }
+      } else if (downloadFormat === 'docx') {
+        await generateDocx(data);
+      } else if (downloadFormat === 'txt') {
+        // Simple text export
+        const textContent = JSON.stringify(data, null, 2);
+        const blob = new Blob([textContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'resume.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      alert(`Download failed: ${msg}`);
+    } finally {
       setIsDownloading(false);
-      
-      // Show success message
-      alert(`Your resume has been downloaded as ${downloadFormat.toUpperCase()}!`);
-    }, 1500);
+    }
   };
 
   const handleStartNewResume = () => {
@@ -72,7 +102,7 @@ export default function DownloadPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div 
+                  <div
                     className={`p-4 border rounded-lg cursor-pointer transition-colors ${downloadFormat === 'pdf' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
                     onClick={() => setDownloadFormat('pdf')}
                   >
@@ -98,7 +128,7 @@ export default function DownloadPage() {
                     </div>
                   </div>
 
-                  <div 
+                  <div
                     className={`p-4 border rounded-lg cursor-pointer transition-colors ${downloadFormat === 'docx' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
                     onClick={() => setDownloadFormat('docx')}
                   >
@@ -124,7 +154,7 @@ export default function DownloadPage() {
                     </div>
                   </div>
 
-                  <div 
+                  <div
                     className={`p-4 border rounded-lg cursor-pointer transition-colors ${downloadFormat === 'txt' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
                     onClick={() => setDownloadFormat('txt')}
                   >
@@ -154,9 +184,10 @@ export default function DownloadPage() {
                 <div className="mt-8 border-t border-gray-200 pt-6">
                   <h3 className="text-sm font-medium text-gray-900 mb-4">Preview</h3>
                   <div className="border border-gray-200 rounded-lg p-4 bg-white max-w-2xl mx-auto">
-                    <div ref={resumeRef} className="scale-75 origin-top">
+                    <div className="scale-75 origin-top">
                       <ResumePreview
-                        data={resumeData}
+                        ref={resumeRef}
+                        data={appState}
                         template={selectedTemplate}
                         style={resumeStyle}
                       />
@@ -165,7 +196,7 @@ export default function DownloadPage() {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between border-t border-gray-200 bg-gray-50 px-6 py-4">
-                <Button 
+                <Button
                   variant="outline"
                   onClick={handleBack}
                   disabled={isDownloading}
@@ -173,14 +204,14 @@ export default function DownloadPage() {
                   Back
                 </Button>
                 <div className="space-x-3">
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={handleStartNewResume}
                     disabled={isDownloading}
                   >
                     Start New Resume
                   </Button>
-                  <Button 
+                  <Button
                     onClick={handleDownload}
                     disabled={isDownloading}
                     className="bg-green-600 hover:bg-green-700"
@@ -264,7 +295,7 @@ export default function DownloadPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="ml-5 pl-4 border-l-2 border-blue-200">
                     <div className="flex items-center py-2">
                       <div className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
@@ -312,8 +343,8 @@ export default function DownloadPage() {
                 <p className="text-sm text-gray-600 mb-4">
                   If you encounter any issues with downloading your resume, please try a different browser or contact support.
                 </p>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full"
                   onClick={() => alert('Contact support at: support@rapidapply.com')}
                 >
