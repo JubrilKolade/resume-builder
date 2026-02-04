@@ -7,15 +7,7 @@ import ResumeForm from '@/components/ResumeForm';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useResume } from '@/contexts/ResumeContext';
-import { ResumeData, AppState, TemplateType } from '@/types/resume';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
-import { templates } from '@/utils/templates';
+import { ResumeData, AppState } from '@/types/resume';
 
 const getTemplateImage = (template: string): string => {
   const imageMap: Record<string, string> = {
@@ -33,7 +25,6 @@ export default function EditPage() {
     resumeData,
     setResumeData,
     selectedTemplate,
-    setSelectedTemplate,
     resumeStyle,
     setCurrentStep
   } = useResume();
@@ -115,25 +106,9 @@ export default function EditPage() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>Template Preview</span>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-blue-600 capitalize outline-none hover:text-blue-700">
-                      {selectedTemplate}
-                      <ChevronDown className="h-4 w-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      {templates.map((template) => (
-                        <DropdownMenuItem
-                          key={template.id}
-                          onClick={() => {
-                            setSelectedTemplate(template.id);
-                          }}
-                          className="capitalize cursor-pointer"
-                        >
-                          {template.name}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <span className="text-lg font-bold text-blue-600 capitalize">
+                    {selectedTemplate}
+                  </span>
                 </CardTitle>
                 <CardDescription>Your selected template</CardDescription>
               </CardHeader>
