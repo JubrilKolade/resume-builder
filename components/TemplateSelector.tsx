@@ -8,7 +8,7 @@ interface TemplateSelectorProps {
   style?: ResumeStyle;
 }
 
-const templates = [
+export const templates = [
   {
     id: 'classic' as TemplateType,
     name: 'Classic',
@@ -44,8 +44,8 @@ export default function TemplateSelector({ selectedTemplate, onTemplateChange }:
             key={template.id}
             onClick={() => onTemplateChange(template.id)}
             className={`group relative flex flex-col rounded-xl border-2 transition-all duration-300 overflow-hidden ${selectedTemplate === template.id
-                ? 'border-blue-600 ring-2 ring-blue-500 ring-offset-2 shadow-xl'
-                : 'border-gray-200 hover:border-blue-400 hover:shadow-lg'
+              ? 'border-blue-600 ring-2 ring-blue-500 ring-offset-2 shadow-xl'
+              : 'border-gray-200 hover:border-blue-400 hover:shadow-lg'
               }`}
             aria-label={`Select ${template.name} template`}
           >
@@ -68,12 +68,12 @@ export default function TemplateSelector({ selectedTemplate, onTemplateChange }:
 
             {/* Template Info */}
             <div className={`p-4 transition-all duration-300 ${selectedTemplate === template.id
-                ? 'bg-blue-50 border-t-2 border-blue-100'
-                : 'bg-white border-t border-gray-200 group-hover:bg-gray-50'
+              ? 'bg-blue-50 border-t-2 border-blue-100'
+              : 'bg-white border-t border-gray-200 group-hover:bg-gray-50'
               }`}>
               <h3 className={`font-bold text-base transition-colors duration-300 ${selectedTemplate === template.id
-                  ? 'text-blue-900'
-                  : 'text-gray-900 group-hover:text-blue-600'
+                ? 'text-blue-900'
+                : 'text-gray-900 group-hover:text-blue-600'
                 }`}>
                 {template.name}
               </h3>
