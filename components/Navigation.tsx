@@ -1,0 +1,220 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { 
+  Menu, 
+  X, 
+  Home, 
+  FileText, 
+  Layout, 
+  Settings, 
+  PenTool, 
+  Upload, 
+  Share2, 
+  HelpCircle, 
+  Shield,
+  ChevronDown
+} from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+interface NavItem {
+  title: string;
+  path: string;
+  icon: React.ElementType;
+  badge?: string;
+}
+
+const navigationItems: NavItem[] = [
+  { title: 'Home', path: '/home', icon: Home },
+  { title: 'Resume Builder', path: '/resume-builder', icon: FileText },
+  { title: 'Dashboard', path: '/dashboard', icon: Layout },
+  { title: 'Templates', path: '/templates', icon: Layout },
+  { title: 'Cover Letters', path: '/cover-letters', icon: PenTool, badge: 'AI' },
+  { title: 'Import/Export', path: '/import-export', icon: Upload },
+  { title: 'Share', path: '/share', icon: Share2 },
+  { title: 'Settings', path: '/settings', icon: Settings },
+  { title: 'Help', path: '/help', icon: HelpCircle },
+  { title: 'Admin', path: '/admin', icon: Shield },
+];
+
+export default function Navigation() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleNavigate = (path: string) => {
+    router.push(path);
+    setIsMobileMenuOpen(false);
+  };
+
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(path);
+  };
+
+  return (
+    <>
+      {/* Desktop Navigation */}
+      <nav className="hidden md:block bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center gap-8">
+              {/* Logo */}
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-white" />
+                </div>
+                <span className="font-bold text-gray-900">RapidApply</span>
+              </div>
+
+              {/* Navigation Links */}
+              <div className="hidden lg:flex items-center gap-6">
+                {navigationItems.slice(0, 6).map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={item.path}
+                      onClick={() => handleNavigate(item.path)}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                        isActive(item.path)
+                          ? 'bg-blue-50 text-blue-600'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {item.title}
+                      {item.badge && (
+                        <span className="px-1.5 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* More Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                    More
+                    <ChevronDown className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {navigationItems.slice(6).map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <DropdownMenuItem
+                        key={item.path}
+                        onClick={() => handleNavigate(item.path)}
+                        className={`flex items-center gap-2 ${
+                          isActive(item.path) ? 'bg-blue-50 text-blue-600' : ''
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {item.title}
+                        {item.badge && (
+                          <span className="px-1.5 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">
+                            {item.badge}
+                          </span>
+                        )}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => handleNavigate('/resume-builder')}
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Create Resume
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Navigation */}
+      <nav className="md:hidden bg-white border-b border-gray-200">
+        <div className="px-4 sm:px-6">
+          <div className="flex justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-bold text-gray-900">RapidApply</span>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="border-t border-gray-200 bg-white">
+            <div className="px-4 py-2 space-y-1">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.path}
+                    onClick={() => handleNavigate(item.path)}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive(item.path)
+                        ? 'bg-blue-50 text-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {item.title}
+                    {item.badge && (
+                      <span className="px-1.5 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+              
+              <div className="pt-4 mt-4 border-t border-gray-200">
+                <Button
+                  onClick={() => handleNavigate('/resume-builder')}
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                >
+                  Create Resume
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </nav>
+    </>
+  );
+}
