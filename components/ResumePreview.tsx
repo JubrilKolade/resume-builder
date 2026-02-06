@@ -1,4 +1,3 @@
-// components/ResumePreview.tsx
 'use client';
 
 import { useRef, useState, Suspense, lazy, useMemo, forwardRef, useImperativeHandle } from 'react';
