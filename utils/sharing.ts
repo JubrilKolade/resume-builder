@@ -214,7 +214,7 @@ export class ShareManager {
 
   // Private helper methods
   private generateShareId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    return Date.now().toString(36) + Math.random().toString(36).slice(2);
   }
 
   private generateShareUrl(shareId: string): string {
@@ -241,9 +241,9 @@ export class ShareManager {
 
   private saveSharesToStorage(): void {
     if (typeof window !== 'undefined') {
-      const sharesArray = Array.from(this.shares.entries()).map(([id, share]) => ({
-        id,
+      const sharesArray = Array.from(this.shares.entries()).map(([shareId, share]) => ({
         ...share,
+        id: shareId,
         createdAt: share.createdAt.toISOString(),
         lastViewed: share.lastViewed.toISOString(),
         expiresAt: share.expiresAt ? share.expiresAt.toISOString() : null,

@@ -1,4 +1,4 @@
-import { ResumeData, TemplateType } from './resume';
+import { ResumeData, TemplateType, ResumeStyle } from './resume';
 
 export interface SavedResume {
   id: string;
@@ -6,7 +6,7 @@ export interface SavedResume {
   description?: string;
   resumeData: ResumeData;
   template: TemplateType;
-  style: any; // ResumeStyle from resume.ts
+  style: ResumeStyle;
   createdAt: Date;
   updatedAt: Date;
   lastAccessed: Date;

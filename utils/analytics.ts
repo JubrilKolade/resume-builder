@@ -1,5 +1,6 @@
 import { AdminAnalytics, OverviewMetrics, TemplateAnalytics, UserAnalytics } from '@/types/admin';
 import { SavedResume } from '@/types/dashboard';
+import { TemplateType } from '@/types/resume';
 
 export const calculateOverviewMetrics = (resumes: SavedResume[]): OverviewMetrics => {
   const now = new Date();
@@ -55,13 +56,13 @@ export const calculateTemplateAnalytics = (resumes: SavedResume[]): TemplateAnal
     },
   };
 
-  const mostPopularTemplate = (Object.entries(templateUsage).reduce((a, b) => 
+  const mostPopularTemplate = (Object.entries(templateUsage).reduce((a, b) =>
     a[1].totalUses > b[1].totalUses ? a : b
-  )[0] as any);
+  )[0] as TemplateType);
 
-  const leastPopularTemplate = (Object.entries(templateUsage).reduce((a, b) => 
+  const leastPopularTemplate = (Object.entries(templateUsage).reduce((a, b) =>
     a[1].totalUses < b[1].totalUses ? a : b
-  )[0] as any);
+  )[0] as TemplateType);
 
   return {
     templateUsage,
