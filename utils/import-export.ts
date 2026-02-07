@@ -1,5 +1,6 @@
 import { ResumeData, PersonalInfo, WorkExperience, Education, Skill } from '@/types/resume';
 import { CoverLetterData } from '@/types/coverLetter';
+import { generateId } from '@/utils/helpers';
 
 export interface ImportResult {
   success: boolean;
@@ -9,7 +10,7 @@ export interface ImportResult {
 }
 
 export interface ExportOptions {
-  format: 'json' | 'csv' | 'xml';
+  format?: 'json' | 'csv' | 'xml';
   includeMetadata?: boolean;
   prettyPrint?: boolean;
 }
@@ -69,7 +70,12 @@ export const importFromCSV = (file: File): Promise<ImportResult> => {
         const headers = lines[0].split(',').map(h => h.trim());
         
         const data: Partial<ResumeData> = {
-          personalInfo: {},
+          personalInfo: {
+            fullName: '',
+            email: '',
+            phone: '',
+            location: '',
+          },
           workExperience: [],
           education: [],
           skills: [],
@@ -98,7 +104,7 @@ export const importFromCSV = (file: File): Promise<ImportResult> => {
             };
           } else if (row.type === 'work') {
             data.workExperience?.push({
-              id: Date.now().toString() + Math.random(),
+              id: generateId(),
               company: row.company || '',
               position: row.position || '',
               location: row.location || '',
@@ -109,7 +115,7 @@ export const importFromCSV = (file: File): Promise<ImportResult> => {
             });
           } else if (row.type === 'education') {
             data.education?.push({
-              id: Date.now().toString() + Math.random(),
+              id: generateId(),
               institution: row.institution || '',
               degree: row.degree || '',
               field: row.field || '',
@@ -120,11 +126,12 @@ export const importFromCSV = (file: File): Promise<ImportResult> => {
               gpa: row.gpa,
             });
           } else if (row.type === 'skill') {
+            const levelNum = row.level ? parseInt(row.level, 10) : NaN;
             data.skills?.push({
-              id: Date.now().toString() + Math.random(),
+              id: generateId(),
               name: row.name || '',
               category: row.category,
-              level: row.level ? parseInt(row.level) : undefined,
+              level: Number.isInteger(levelNum) ? levelNum : undefined,
             });
           }
         }
@@ -352,47 +359,117 @@ export const exportCoverLetterToJSON = (data: CoverLetterData): string => {
   }, null, 2);
 };
 
+// Unwrap exported format { data, metadata } if present
+function unwrapImported(data: unknown): unknown {
+  if (data && typeof data === 'object' && 'data' in data && typeof (data as { data: unknown }).data === 'object') {
+    return (data as { data: unknown }).data;
+  }
+  return data;
+}
+
+// Ensure array items have id; normalize shapes for work/education/skills
+function ensureId<T extends { id?: string }>(item: T, fallback: () => string): T & { id: string } {
+  const id = typeof item.id === 'string' && item.id.length > 0 ? item.id : fallback();
+  return { ...item, id };
+}
+
 // Utility Functions
-const validateResumeData = (data: any): { isValid: boolean; data?: Partial<ResumeData>; error?: string; warnings?: string[] } => {
+const validateResumeData = (raw: unknown): { isValid: boolean; data?: Partial<ResumeData>; error?: string; warnings?: string[] } => {
   const warnings: string[] = [];
-  
+  const data = unwrapImported(raw);
+
   if (!data || typeof data !== 'object') {
     return { isValid: false, error: 'Invalid data format' };
   }
-  
+
+  const obj = data as Record<string, unknown>;
   const resumeData: Partial<ResumeData> = {};
-  
-  // Validate personal info
-  if (data.personalInfo && typeof data.personalInfo === 'object') {
-    resumeData.personalInfo = data.personalInfo;
+
+  // Require personal info object (can have empty fields)
+  if (obj.personalInfo && typeof obj.personalInfo === 'object') {
+    const pi = obj.personalInfo as Record<string, unknown>;
+    resumeData.personalInfo = {
+      fullName: typeof pi.fullName === 'string' ? pi.fullName : '',
+      email: typeof pi.email === 'string' ? pi.email : '',
+      phone: typeof pi.phone === 'string' ? pi.phone : '',
+      location: typeof pi.location === 'string' ? pi.location : '',
+      linkedin: typeof pi.linkedin === 'string' ? pi.linkedin : undefined,
+      website: typeof pi.website === 'string' ? pi.website : undefined,
+      summary: typeof pi.summary === 'string' ? pi.summary : undefined,
+      title: typeof pi.title === 'string' ? pi.title : undefined,
+      career: typeof pi.career === 'string' ? pi.career : undefined,
+      image: typeof pi.image === 'string' ? pi.image : undefined,
+    };
   } else {
-    warnings.push('Personal information is missing or invalid');
+    return { isValid: false, error: 'Personal information is required', warnings };
   }
-  
-  // Validate work experience
-  if (Array.isArray(data.workExperience)) {
-    resumeData.workExperience = data.workExperience;
+
+  // Normalize work experience array (ensure each item has id)
+  if (Array.isArray(obj.workExperience)) {
+    resumeData.workExperience = obj.workExperience.map((w: unknown) => {
+      const item = typeof w === 'object' && w !== null ? (w as Record<string, unknown>) : {};
+      return ensureId(
+        {
+          company: typeof item.company === 'string' ? item.company : '',
+          position: typeof item.position === 'string' ? item.position : '',
+          location: typeof item.location === 'string' ? item.location : '',
+          startDate: typeof item.startDate === 'string' ? item.startDate : '',
+          endDate: typeof item.endDate === 'string' ? item.endDate : '',
+          current: Boolean(item.current),
+          description: Array.isArray(item.description) ? item.description.filter((d): d is string => typeof d === 'string') : [],
+          ...item,
+        } as WorkExperience,
+        () => generateId()
+      ) as WorkExperience;
+    });
   } else {
     resumeData.workExperience = [];
     warnings.push('Work experience is not a valid array');
   }
-  
-  // Validate education
-  if (Array.isArray(data.education)) {
-    resumeData.education = data.education;
+
+  // Normalize education array
+  if (Array.isArray(obj.education)) {
+    resumeData.education = obj.education.map((e: unknown) => {
+      const item = typeof e === 'object' && e !== null ? (e as Record<string, unknown>) : {};
+      return ensureId(
+        {
+          institution: typeof item.institution === 'string' ? item.institution : '',
+          degree: typeof item.degree === 'string' ? item.degree : '',
+          field: typeof item.field === 'string' ? item.field : '',
+          location: typeof item.location === 'string' ? item.location : '',
+          startDate: typeof item.startDate === 'string' ? item.startDate : '',
+          endDate: typeof item.endDate === 'string' ? item.endDate : '',
+          current: Boolean(item.current),
+          gpa: typeof item.gpa === 'string' ? item.gpa : undefined,
+          ...item,
+        } as Education,
+        () => generateId()
+      ) as Education;
+    });
   } else {
     resumeData.education = [];
     warnings.push('Education is not a valid array');
   }
-  
-  // Validate skills
-  if (Array.isArray(data.skills)) {
-    resumeData.skills = data.skills;
+
+  // Normalize skills array
+  if (Array.isArray(obj.skills)) {
+    resumeData.skills = obj.skills.map((s: unknown) => {
+      const item = typeof s === 'object' && s !== null ? (s as Record<string, unknown>) : {};
+      return ensureId(
+        {
+          name: typeof item.name === 'string' ? item.name : '',
+          category: typeof item.category === 'string' ? item.category : undefined,
+          level: typeof item.level === 'number' && Number.isInteger(item.level) ? item.level : undefined,
+          ...item,
+        } as Skill,
+        () => generateId()
+      ) as Skill;
+    });
   } else {
     resumeData.skills = [];
     warnings.push('Skills is not a valid array');
   }
-  
+
   return {
     isValid: true,
     data: resumeData,

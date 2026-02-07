@@ -13,15 +13,17 @@ import {
   ArrowRight,
   Import
 } from 'lucide-react';
-import { importFromJSON, importFromCSV, importLinkedInProfile, downloadFile } from '@/utils/import-export';
+import { importFromJSON, importFromCSV, exportToJSON, exportToCSV, exportToXML, downloadFile, type ImportResult } from '@/utils/import-export';
 import { useApp } from '@/contexts/AppContext';
+import { useResume } from '@/contexts/ResumeContext';
 
 export default function ImportExportPage() {
   const { addNotification } = useApp();
+  const { getResumeData, setResumeData, resumeData } = useResume();
   const [activeTab, setActiveTab] = useState<'import' | 'export'>('import');
   const [importMethod, setImportMethod] = useState<'file' | 'linkedin' | 'csv'>('file');
   const [isImporting, setIsImporting] = useState(false);
-  const [importResult, setImportResult] = useState<any>(null);
+  const [importResult, setImportResult] = useState<ImportResult | null>(null);
 
   const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -67,8 +69,34 @@ export default function ImportExportPage() {
     }
   };
 
+  const handleApplyImport = () => {
+    if (!importResult?.success || !importResult.data) return;
+    const imported = importResult.data;
+    setResumeData({
+      ...resumeData,
+      resumeData: {
+        ...resumeData.resumeData,
+        ...(imported.personalInfo && { personalInfo: { ...resumeData.resumeData.personalInfo, ...imported.personalInfo } }),
+        ...(imported.workExperience && { workExperience: imported.workExperience }),
+        ...(imported.education && { education: imported.education }),
+        ...(imported.skills && { skills: imported.skills }),
+        ...(imported.certifications !== undefined && { certifications: imported.certifications }),
+        ...(imported.community !== undefined && { community: imported.community }),
+        ...(imported.leadership !== undefined && { leadership: imported.leadership }),
+        ...(imported.references !== undefined && { references: imported.references }),
+        ...(imported.projects !== undefined && { projects: imported.projects }),
+        ...(imported.languages !== undefined && { languages: imported.languages }),
+      },
+    });
+    addNotification({
+      type: 'success',
+      title: 'Applied',
+      message: 'Imported data has been applied to your resume.',
+    });
+    setImportResult(null);
+  };
+
   const handleLinkedInImport = () => {
-    // In a real implementation, this would open LinkedIn OAuth flow
     addNotification({
       type: 'info',
       title: 'LinkedIn Import',
@@ -77,33 +105,31 @@ export default function ImportExportPage() {
   };
 
   const handleExport = (format: 'json' | 'csv' | 'xml') => {
-    // Get current resume data from context
-    const resumeData = {}; // This would come from your resume context
-    
+    const resumeData = getResumeData();
+
     try {
-      let content;
-      let filename;
-      let mimeType;
-      
+      let content: string;
+      let filename: string;
+      let mimeType: string;
+
       switch (format) {
         case 'json':
-          content = JSON.stringify({ data: resumeData, exportedAt: new Date().toISOString() }, null, 2);
+          content = exportToJSON(resumeData, { includeMetadata: true, prettyPrint: true });
           filename = 'resume-data.json';
           mimeType = 'application/json';
           break;
         case 'csv':
-          // Simple CSV export - you'd want to implement proper CSV formatting
-          content = 'Section,Data\nPersonal Info,"Sample Data"\nExperience,"Sample Experience"';
+          content = exportToCSV(resumeData);
           filename = 'resume-data.csv';
           mimeType = 'text/csv';
           break;
         case 'xml':
-          content = '<?xml version="1.0" encoding="UTF-8"?><resume><personal-info><name>Sample Name</name></personal-info></resume>';
+          content = exportToXML(resumeData);
           filename = 'resume-data.xml';
           mimeType = 'application/xml';
           break;
       }
-      
+
       downloadFile(content, filename, mimeType);
       
       addNotification({
@@ -297,7 +323,7 @@ export default function ImportExportPage() {
                   {importResult.success ? (
                     <div>
                       <p className="text-green-800 mb-4">
-                        Your data has been imported successfully!
+                        Your data has been imported successfully. Apply it to your current resume to use it.
                       </p>
                       {importResult.warnings && importResult.warnings.length > 0 && (
                         <div className="mt-4">
@@ -309,6 +335,14 @@ export default function ImportExportPage() {
                           </ul>
                         </div>
                       )}
+                      <div className="mt-4 flex gap-2">
+                        <Button onClick={handleApplyImport} className="bg-green-600 hover:bg-green-700">
+                          Apply to my resume
+                        </Button>
+                        <Button variant="outline" onClick={() => setImportResult(null)}>
+                          Dismiss
+                        </Button>
+                      </div>
                     </div>
                   ) : (
                     <div>
