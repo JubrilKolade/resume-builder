@@ -107,7 +107,7 @@ export default function CoverLetterPage() {
           'I would welcome the opportunity to discuss how my background, skills, and enthusiasm would make me a strong candidate for this position. Thank you for considering my application.',
         ],
         closing: 'Sincerely,',
-        signature: `${resumeData.resumeData.personalInfo.firstName || ''} ${resumeData.resumeData.personalInfo.lastName || ''}`.trim() || 'Your Name',
+        signature: resumeData.resumeData.personalInfo.fullName?.trim() || 'Your Name',
       };
 
       if (currentCoverLetter) {
@@ -124,13 +124,13 @@ export default function CoverLetterPage() {
 
   const handlePreview = () => {
     if (currentCoverLetter) {
-      router.push(`/cover-letter/preview/${currentCoverLetter.id}`);
+      router.push(`/cover-letters/preview/${currentCoverLetter.id}`);
     }
   };
 
   const handleDownload = () => {
     if (currentCoverLetter) {
-      router.push(`/cover-letter/download/${currentCoverLetter.id}`);
+      router.push(`/cover-letters/download/${currentCoverLetter.id}`);
     }
   };
 
@@ -646,7 +646,7 @@ export default function CoverLetterPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => router.push(`/cover-letter/preview/${letter.id}`)}
+                          onClick={() => router.push(`/cover-letters/preview/${letter.id}`)}
                         >
                           <Eye className="w-3 h-3" />
                         </Button>
