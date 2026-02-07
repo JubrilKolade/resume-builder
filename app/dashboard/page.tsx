@@ -49,7 +49,7 @@ export default function DashboardPage() {
     addNotification
   } = useApp();
   
-  const { setSelectedTemplate, setResumeStyle } = useResume();
+  const { setResumeData, setSelectedTemplate, setResumeStyle } = useResume();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTemplate, setSelectedTemplateFilter] = useState<TemplateType | 'all'>('all');
@@ -108,8 +108,11 @@ export default function DashboardPage() {
 
   const handleEdit = (resume: SavedResume) => {
     setCurrentResume(resume);
-    setSelectedTemplate(resume.template);
-    setResumeStyle(resume.style);
+    setResumeData({
+      resumeData: resume.resumeData,
+      selectedTemplate: resume.template,
+      style: resume.style,
+    });
     router.push('/edit');
   };
 
@@ -133,10 +136,12 @@ export default function DashboardPage() {
   };
 
   const handleDownload = (resume: SavedResume) => {
-    // Set current resume and navigate to download
     setCurrentResume(resume);
-    setSelectedTemplate(resume.template);
-    setResumeStyle(resume.style);
+    setResumeData({
+      resumeData: resume.resumeData,
+      selectedTemplate: resume.template,
+      style: resume.style,
+    });
     router.push('/download');
   };
 
