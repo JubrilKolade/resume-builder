@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Lato, Open_Sans, Roboto } from "next/font/google";
 import "./globals.css";
 import { ResumeProvider } from "@/contexts/ResumeContext";
+import { AppProvider } from "@/contexts/AppContext";
+import { CoverLetterProvider } from "@/contexts/CoverLetterContext";
+import Navigation from "@/components/Navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,9 +37,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${openSans.variable} ${lato.variable} antialiased`}
       >
-        <ResumeProvider>
-          {children}
-        </ResumeProvider>
+        <AppProvider>
+          <CoverLetterProvider>
+            <ResumeProvider>
+              <Navigation />
+              {children}
+            </ResumeProvider>
+          </CoverLetterProvider>
+        </AppProvider>
       </body>
     </html>
   );

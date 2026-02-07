@@ -9,7 +9,7 @@ import { useResume } from '@/contexts/ResumeContext';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
 
-export default function Home() {
+export default function ResumeBuilderPage() {
   const router = useRouter();
   const { selectedTemplate, setSelectedTemplate, resumeStyle, setResumeStyle } = useResume();
   const [selectedFont, setSelectedFont] = useState(resumeStyle.fontFamily);

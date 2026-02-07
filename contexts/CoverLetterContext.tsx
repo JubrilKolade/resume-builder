@@ -92,7 +92,7 @@ export const CoverLetterProvider = ({ children }: { children: ReactNode }) => {
         introduction: '',
         bodyParagraphs: ['', '', ''],
         closing: 'Sincerely,',
-        signature: `${personalInfo.firstName || ''} ${personalInfo.lastName || ''}`,
+        signature: personalInfo.fullName?.trim() || 'Your Name',
       },
       template: selectedTemplate,
       style: coverLetterStyle,

@@ -192,13 +192,13 @@ export default function SettingsPage() {
           <div className="lg:col-span-1">
             <Card>
               <CardContent className="p-4">
-                <Card className="shadow-lg">
+                <nav className="flex flex-col gap-1" aria-label="Settings sections">
                   {tabs.map((tab) => {
                     const Icon = tab.icon;
                     return (
                       <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id as any)}
+                        onClick={() => setActiveTab(tab.id as typeof activeTab)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
                           activeTab === tab.id
                             ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600'
@@ -220,12 +220,18 @@ export default function SettingsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  {tabs.find(t => t.id === activeTab)?.icon && (
-                    <div className="w-5 h-5">
-                      {tabs.find(t => t.id === activeTab)?.icon({ className: 'w-5 h-5' })}
-                    </div>
-                  )}
-                  {tabs.find(t => t.id === activeTab)?.label}
+                  {(() => {
+                    const currentTab = tabs.find(t => t.id === activeTab);
+                    const IconComponent = currentTab?.icon;
+                    return IconComponent ? (
+                      <>
+                        <IconComponent className="w-5 h-5" />
+                        {currentTab.label}
+                      </>
+                    ) : (
+                      currentTab?.label
+                    );
+                  })()}
                 </CardTitle>
                 <CardDescription>
                   {activeTab === 'profile' && 'Manage your personal information and profile details'}

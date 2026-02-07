@@ -1,5 +1,5 @@
 import { CoverLetterData, CoverLetterTemplate, CoverLetterStyle } from '@/types/coverLetter';
-import { PersonalInfo } from '@/types/resume';
+import { PersonalInfo, WorkExperience, Skill } from '@/types/resume';
 
 export interface CoverLetterTemplateData {
   id: CoverLetterTemplate;
@@ -50,7 +50,7 @@ export const generateCoverLetterContent = (
   const introduction = generateIntroduction(personalInfo, recipientInfo.company, jobDescription);
   const bodyParagraphs = generateBodyParagraphs(personalInfo, jobDescription, companyInfo);
   const closing = generateClosing();
-  const signature = `${personalInfo.firstName || ''} ${personalInfo.lastName || ''}`.trim() || 'Your Name';
+  const signature = personalInfo.fullName?.trim() || 'Your Name';
 
   return {
     letterContent: {
@@ -64,19 +64,16 @@ export const generateCoverLetterContent = (
 };
 
 export const generateCoverLetterFromResume = (
-  resumeData: any,
+  resumeData: { personalInfo?: PersonalInfo; workExperience?: WorkExperience[]; skills?: Skill[] },
   targetJob: string = '',
   targetCompany: string = ''
 ): Partial<CoverLetterData> => {
-  const personalInfo = resumeData.personalInfo || {};
-  const workExperience = resumeData.workExperience || [];
-  const skills = resumeData.skills || [];
-  
-  // Extract relevant experience
-  const relevantExperience = workExperience.slice(0, 2).map(exp => exp.description || []).flat();
-  
-  // Extract key skills
-  const keySkills = skills.slice(0, 5).map(skill => skill.name).join(', ');
+  const personalInfo = resumeData.personalInfo ?? ({} as PersonalInfo);
+  const workExperience = resumeData.workExperience ?? [];
+  const skills = resumeData.skills ?? [];
+
+  const relevantExperience = workExperience.slice(0, 2).map((exp: WorkExperience) => exp.description || []).flat();
+  const keySkills = skills.slice(0, 5).map((skill: Skill) => skill.name).join(', ');
   
   const greeting = 'Dear Hiring Manager,';
   
@@ -91,7 +88,7 @@ export const generateCoverLetterFromResume = (
   ];
   
   const closing = 'Sincerely,';
-  const signature = `${personalInfo.firstName || ''} ${personalInfo.lastName || ''}`.trim() || 'Your Name';
+  const signature = personalInfo.fullName?.trim() || 'Your Name';
 
   return {
     letterContent: {
