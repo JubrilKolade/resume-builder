@@ -32,7 +32,7 @@ interface NavItem {
 }
 
 const navigationItems: NavItem[] = [
-  { title: 'Home', path: '/home', icon: Home },
+  { title: 'Home', path: '/', icon: Home },
   { title: 'Resume Builder', path: '/resume-builder', icon: FileText },
   { title: 'Dashboard', path: '/dashboard', icon: Layout },
   { title: 'Templates', path: '/templates', icon: Layout },
