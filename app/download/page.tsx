@@ -5,19 +5,20 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useResume } from '@/contexts/ResumeContext';
+import { useApp } from '@/contexts/AppContext';
 import ResumePreview, { ResumePreviewHandle } from '@/components/ResumePreview';
-import { generatePDF } from '../../utils/pdf-generator';
-import { generateDocx } from '../../utils/docx-generator';
-
+import { generatePDF } from '@/utils/pdf-generator';
+import { generateDocx } from '@/utils/docx-generator';
 
 export default function DownloadPage() {
   const router = useRouter();
+  const { addNotification } = useApp();
   const {
     resumeData: appState,
     selectedTemplate,
     resumeStyle,
     setCurrentStep,
-    getResumeData
+    getResumeData,
   } = useResume();
 
   const [isDownloading, setIsDownloading] = useState(false);
@@ -43,11 +44,13 @@ export default function DownloadPage() {
       if (downloadFormat === 'pdf') {
         const element = resumeRef.current?.getElement();
         if (element) {
-          // Pass the resumeData to generate correct filename
           await generatePDF(element, data);
         } else {
-          console.error("Resume element reference is missing");
-          alert("Could not load resume for PDF generation. Please reload and try again.");
+          addNotification({
+            type: 'error',
+            title: 'PDF generation failed',
+            message: 'Could not load resume for PDF generation. Please reload and try again.',
+          });
         }
       } else if (downloadFormat === 'docx') {
         await generateDocx(data);
@@ -66,8 +69,11 @@ export default function DownloadPage() {
       }
     } catch (error) {
       console.error('Download failed:', error);
-      const msg = error instanceof Error ? error.message : "Unknown error";
-      alert(`Download failed: ${msg}`);
+      addNotification({
+        type: 'error',
+        title: 'Download failed',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred.',
+      });
     } finally {
       setIsDownloading(false);
     }

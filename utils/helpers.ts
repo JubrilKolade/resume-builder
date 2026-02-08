@@ -29,14 +29,16 @@ export const clearLocalStorage = (): void => {
 };
 
 export const generateId = (): string => {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 };
 
 export const formatDate = (date: string): string => {
   if (!date) return '';
   const [year, month] = date.split('-');
+  const monthNum = month != null ? parseInt(month, 10) : NaN;
+  if (!year || isNaN(monthNum) || monthNum < 1 || monthNum > 12) return date;
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${monthNames[parseInt(month) - 1]} ${year}`;
+  return `${monthNames[monthNum - 1]} ${year}`;
 };
 
 export const validateEmail = (email: string): boolean => {
@@ -51,35 +53,36 @@ export const validatePhone = (phone: string): boolean => {
 
 export const isResumeDataComplete = (data: ResumeData): { valid: boolean; errors: string[] } => {
   const errors: string[] = [];
-  
-  if (!data.personalInfo.fullName.trim()) {
+  const personalInfo = data?.personalInfo;
+
+  if (!personalInfo?.fullName?.trim()) {
     errors.push('Full name is required');
   }
-  
-  if (!data.personalInfo.email.trim()) {
+
+  if (!personalInfo?.email?.trim()) {
     errors.push('Email is required');
-  } else if (!validateEmail(data.personalInfo.email)) {
+  } else if (!validateEmail(personalInfo.email)) {
     errors.push('Valid email is required');
   }
-  
-  if (!data.personalInfo.phone.trim()) {
+
+  if (!personalInfo?.phone?.trim()) {
     errors.push('Phone number is required');
   }
-  
-  if (data.workExperience.length === 0) {
+
+  if (!data.workExperience?.length) {
     errors.push('At least one work experience is required');
   }
-  
-  if (data.education.length === 0) {
+
+  if (!data.education?.length) {
     errors.push('At least one education entry is required');
   }
-  
-  if (data.skills.length === 0) {
+
+  if (!data.skills?.length) {
     errors.push('At least one skill is required');
   }
-  
+
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 };

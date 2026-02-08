@@ -29,18 +29,26 @@ const ResumeContext = createContext<ResumeContextType | undefined>(undefined);
 export const ResumeProvider = ({ children }: { children: ReactNode }) => {
   const [resumeData, setResumeData] = useState<AppState>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('resumeData');
-      return saved ? JSON.parse(saved) : defaultResumeData;
+      try {
+        const saved = localStorage.getItem('resumeData');
+        return saved ? JSON.parse(saved) : defaultResumeData;
+      } catch {
+        return defaultResumeData;
+      }
     }
     return defaultResumeData;
   });
 
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('classic');
-  
+
   const [resumeStyle, setResumeStyle] = useState<ResumeStyle>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('resumeStyle');
-      return saved ? JSON.parse(saved) : defaultResumeStyle;
+      try {
+        const saved = localStorage.getItem('resumeStyle');
+        return saved ? JSON.parse(saved) : defaultResumeStyle;
+      } catch {
+        return defaultResumeStyle;
+      }
     }
     return defaultResumeStyle;
   });

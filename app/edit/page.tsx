@@ -16,6 +16,7 @@ import {
 import { useResume } from '@/contexts/ResumeContext';
 import { ResumeData, AppState, TemplateType } from '@/types/resume';
 import { templates } from '@/components/TemplateSelector';
+import { defaultResumeData } from '@/utils/defaultData';
 
 
 
@@ -45,31 +46,18 @@ export default function EditPage() {
     });
   };
 
-  // Ensure we have the required resume data structure
+  // Ensure we have the required resume data structure (e.g. after loading old localStorage shape)
   useEffect(() => {
     if (!resumeData.resumeData) {
       setResumeData({
         ...resumeData,
-        resumeData: {
-          personalInfo: {
-            fullName: '',
-            email: '',
-            phone: '',
-            location: '',
-            linkedin: '',
-            website: '',
-            summary: ''
-          },
-          workExperience: [],
-          education: [],
-          skills: []
-        }
+        resumeData: { ...defaultResumeData.resumeData },
       });
     }
   }, [resumeData, setResumeData]);
 
   const handleBack = () => {
-    router.push('/');
+    router.push('/resume-builder');
   };
 
   const handleContinue = () => {

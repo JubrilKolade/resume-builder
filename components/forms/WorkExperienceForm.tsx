@@ -1,7 +1,7 @@
 import { WorkExperience } from '@/types/resume';
 import { generateId } from '@/utils/helpers';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 interface WorkExperienceFormProps {
   data: WorkExperience[];
@@ -10,6 +10,11 @@ interface WorkExperienceFormProps {
 
 export default function WorkExperienceForm({ data, onChange }: WorkExperienceFormProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  /** During drag, hold the reordered list; commit to parent only on drop */
+  const [dragPreview, setDragPreview] = useState<WorkExperience[] | null>(null);
+  const dragPreviewIndexRef = useRef<number>(0);
+
+  const listForEdit = dragPreview ?? data;
 
   const addExperience = () => {
     const newExperience: WorkExperience = {
@@ -22,81 +27,94 @@ export default function WorkExperienceForm({ data, onChange }: WorkExperienceFor
       current: false,
       description: [''],
     };
-    onChange([...data, newExperience]);
+    const next = [...listForEdit, newExperience];
+    if (dragPreview !== null) setDragPreview(next);
+    else onChange(next);
   };
 
   const removeExperience = (id: string) => {
-    onChange(data.filter((exp) => exp.id !== id));
+    const next = listForEdit.filter((exp) => exp.id !== id);
+    if (dragPreview !== null) setDragPreview(next);
+    else onChange(next);
   };
 
-  const updateExperience = (id: string, field: keyof WorkExperience, value: any) => {
-    onChange(
-      data.map((exp) =>
-        exp.id === id ? { ...exp, [field]: value } : exp
-      )
+  const updateExperience = (id: string, field: keyof WorkExperience, value: WorkExperience[keyof WorkExperience]) => {
+    const next = listForEdit.map((exp) =>
+      exp.id === id ? { ...exp, [field]: value } : exp
     );
+    if (dragPreview !== null) setDragPreview(next);
+    else onChange(next);
   };
 
   const updateDescription = (id: string, index: number, value: string) => {
-    onChange(
-      data.map((exp) =>
-        exp.id === id
-          ? {
-              ...exp,
-              description: exp.description.map((desc, i) =>
-                i === index ? value : desc
-              ),
-            }
-          : exp
-      )
+    const next = listForEdit.map((exp) =>
+      exp.id === id
+        ? {
+            ...exp,
+            description: exp.description.map((desc, i) =>
+              i === index ? value : desc
+            ),
+          }
+        : exp
     );
+    if (dragPreview !== null) setDragPreview(next);
+    else onChange(next);
   };
 
   const addDescriptionPoint = (id: string) => {
-    onChange(
-      data.map((exp) =>
-        exp.id === id
-          ? { ...exp, description: [...exp.description, ''] }
-          : exp
-      )
+    const next = listForEdit.map((exp) =>
+      exp.id === id
+        ? { ...exp, description: [...exp.description, ''] }
+        : exp
     );
+    if (dragPreview !== null) setDragPreview(next);
+    else onChange(next);
   };
 
   const removeDescriptionPoint = (id: string, index: number) => {
-    onChange(
-      data.map((exp) =>
-        exp.id === id
-          ? {
-              ...exp,
-              description: exp.description.filter((_, i) => i !== index),
-            }
-          : exp
-      )
+    const next = listForEdit.map((exp) =>
+      exp.id === id
+        ? {
+            ...exp,
+            description: exp.description.filter((_, i) => i !== index),
+          }
+        : exp
     );
+    if (dragPreview !== null) setDragPreview(next);
+    else onChange(next);
   };
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
+    setDragPreview([...data]);
+    dragPreviewIndexRef.current = index;
   };
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
-    if (draggedIndex === null || draggedIndex === index) return;
+    if (draggedIndex === null) return;
+    const list = dragPreview ?? data;
+    const from = dragPreviewIndexRef.current;
+    if (from === index) return;
 
-    const newData = [...data];
-    const draggedItem = newData[draggedIndex];
-    newData.splice(draggedIndex, 1);
-    newData.splice(index, 0, draggedItem);
-
-    onChange(newData);
-    setDraggedIndex(index);
+    const reordered = [...list];
+    const [item] = reordered.splice(from, 1);
+    reordered.splice(index, 0, item);
+    setDragPreview(reordered);
+    dragPreviewIndexRef.current = index;
   };
 
   const handleDragEnd = () => {
+    if (dragPreview !== null) {
+      onChange(dragPreview);
+      setDragPreview(null);
+    }
     setDraggedIndex(null);
   };
 
-  if (data.length === 0) {
+  const displayList = dragPreview ?? data;
+
+  if (displayList.length === 0) {
     return (
       <div className="py-8 text-center">
         <p className="text-gray-500 mb-4">No work experience added yet</p>
@@ -113,7 +131,7 @@ export default function WorkExperienceForm({ data, onChange }: WorkExperienceFor
 
   return (
     <div className="space-y-6 pt-4">
-      {data.map((exp, index) => (
+      {displayList.map((exp, index) => (
         <div
           key={exp.id}
           draggable

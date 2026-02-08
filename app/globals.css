@@ -1,18 +1,59 @@
 @import "tailwindcss";
 
+/* Theme-based styling */
 @layer base {
   html {
     @apply scroll-smooth;
   }
-  
+
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-gray-50 text-gray-900 transition-colors duration-300;
+  }
+
+  /* Dark theme */
+  .dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+
+  /* Theme transitions */
+  * {
+    @apply transition-colors duration-300;
   }
 }
 
 @layer utilities {
   .print-page {
     @apply bg-white shadow-none;
+  }
+
+  /* Theme-aware utilities */
+  .theme-aware {
+    @apply transition-all duration-300;
+  }
+
+  /* Dark mode specific utilities */
+  .dark .bg-white {
+    @apply bg-gray-800;
+  }
+
+  .dark .text-gray-900 {
+    @apply text-gray-100;
+  }
+
+  .dark .text-gray-600 {
+    @apply text-gray-300;
+  }
+
+  .dark .border-gray-200 {
+    @apply border-gray-700;
+  }
+
+  .dark .bg-gray-50 {
+    @apply bg-gray-800;
+  }
+
+  .dark .shadow-lg {
+    @apply shadow-gray-900/10;
   }
 }
 
