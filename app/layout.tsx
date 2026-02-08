@@ -4,6 +4,7 @@ import "./globals.css";
 import { ResumeProvider } from "@/contexts/ResumeContext";
 import { AppProvider } from "@/contexts/AppContext";
 import { CoverLetterProvider } from "@/contexts/CoverLetterContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import Navigation from "@/components/Navigation";
 
 const geistSans = Geist({
@@ -33,18 +34,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=localStorage.getItem('theme');var d=t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d);})();`,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${openSans.variable} ${lato.variable} antialiased`}
       >
-        <AppProvider>
-          <CoverLetterProvider>
-            <ResumeProvider>
-              <Navigation />
-              {children}
-            </ResumeProvider>
-          </CoverLetterProvider>
-        </AppProvider>
+        <ThemeProvider>
+          <AppProvider>
+            <CoverLetterProvider>
+              <ResumeProvider>
+                <Navigation />
+                {children}
+              </ResumeProvider>
+            </CoverLetterProvider>
+          </AppProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
