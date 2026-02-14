@@ -3,46 +3,44 @@
 import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import {
-  Menu,
-  X,
-  Home,
-  FileText,
-  Layout,
-  Settings,
-  PenTool,
-  Upload,
-  Share2,
-  HelpCircle,
+import { 
+  Menu, 
+  X, 
+  Home, 
+  FileText, 
+  Layout, 
+  Settings, 
+  PenTool, 
+  Upload, 
+  Share2, 
+  HelpCircle, 
   Shield,
   ChevronDown,
   Sun,
   Moon,
-  MoreHorizontal,
+  Monitor
 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import { useTheme } from '@/contexts/ThemeContext';
 
 interface NavItem {
   title: string;
   path: string;
   icon: React.ElementType;
+  badge?: string;
 }
 
-const mainNav: NavItem[] = [
-  { title: 'Home', path: '/', icon: Home },
-  { title: 'Resume', path: '/resume-builder', icon: FileText },
+const navigationItems: NavItem[] = [
+  { title: 'Home', path: '/home', icon: Home },
+  { title: 'Resume Builder', path: '/resume-builder', icon: FileText },
   { title: 'Dashboard', path: '/dashboard', icon: Layout },
-];
-
-const moreNav: NavItem[] = [
   { title: 'Templates', path: '/templates', icon: Layout },
-  { title: 'Cover Letters', path: '/cover-letters', icon: PenTool },
+  { title: 'Cover Letters', path: '/cover-letters', icon: PenTool, badge: 'AI' },
   { title: 'Import/Export', path: '/import-export', icon: Upload },
   { title: 'Share', path: '/share', icon: Share2 },
   { title: 'Settings', path: '/settings', icon: Settings },
@@ -53,8 +51,8 @@ const moreNav: NavItem[] = [
 export default function Navigation() {
   const router = useRouter();
   const pathname = usePathname();
-  const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const handleNavigate = (path: string) => {
     router.push(path);
@@ -62,170 +60,188 @@ export default function Navigation() {
   };
 
   const isActive = (path: string) => {
-    if (path === '/') return pathname === '/';
+    if (path === '/') {
+      return pathname === '/';
+    }
     return pathname.startsWith(path);
   };
 
-  const navLinkClass = (active: boolean) =>
-    `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-      active
-        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 dark:bg-blue-500/20'
-        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800'
-    }`;
-
   return (
     <>
-      {/* Desktop */}
-      <nav className="hidden md:block border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
+      {/* Desktop Navigation */}
+      <nav className="hidden md:block bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-14">
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => handleNavigate('/')}
-                className="flex items-center gap-2 rounded-md p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Home"
-              >
-                <div className="w-8 h-8 bg-blue-600 dark:bg-blue-500 rounded-lg flex items-center justify-center shrink-0">
-                  <FileText className="w-4 h-4 text-white" />
+          <div className="flex justify-between h-16">
+            <div className="flex items-center gap-8">
+              {/* Logo */}
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-semibold text-gray-900 dark:text-white hidden sm:inline">
-                  RapidApply
-                </span>
-              </button>
+                <span className="font-bold text-gray-900 dark:text-gray-100">RapidApply</span>
+              </div>
 
-              <div className="hidden lg:flex items-center gap-0.5 ml-4">
-                {mainNav.map((item) => {
+              {/* Navigation Links */}
+              <div className="hidden lg:flex items-center gap-6">
+                {navigationItems.slice(0, 6).map((item) => {
                   const Icon = item.icon;
                   return (
                     <button
                       key={item.path}
                       onClick={() => handleNavigate(item.path)}
-                      className={navLinkClass(isActive(item.path))}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        isActive(item.path)
+                          ? 'bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-200'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800'
+                      }`}
                     >
-                      <Icon className="w-4 h-4 shrink-0" />
-                      {item.title}
+                      <Icon className="w-4 h-4" />
+                      <span>{item.title}</span>
+                      {item.badge && (
+                        <span className="ml-1 px-1.5 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full font-medium">
+                          {item.badge}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
               </div>
 
+              {/* More Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`ml-1 gap-1.5 ${navLinkClass(moreNav.some((i) => isActive(i.path)))}`}
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                   >
-                    <MoreHorizontal className="w-4 h-4" />
-                    <span className="hidden lg:inline">More</span>
-                    <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                    More
+                    <ChevronDown className="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="min-w-[180px] dark:border-gray-800 dark:bg-gray-900">
-                  {moreNav.map((item) => {
+                <DropdownMenuContent align="end" className="w-48">
+                  {navigationItems.slice(6).map((item) => {
                     const Icon = item.icon;
                     return (
                       <DropdownMenuItem
                         key={item.path}
                         onClick={() => handleNavigate(item.path)}
-                        className={`flex items-center gap-2 cursor-pointer dark:focus:bg-gray-800 ${
-                          isActive(item.path) ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' : ''
+                        className={`flex items-center gap-2 ${
+                          isActive(item.path) 
+                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-200' 
+                            : 'text-gray-700 dark:text-gray-200'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
-                        {item.title}
+                        <span>{item.title}</span>
+                        {item.badge && (
+                          <span className="ml-auto px-1.5 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full font-medium">
+                            {item.badge}
+                          </span>
+                        )}
                       </DropdownMenuItem>
                     );
                   })}
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleTheme}
-                className="rounded-full text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800"
-                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-              >
-                {theme === 'dark' ? (
-                  <Sun className="w-4 h-4" />
-                ) : (
-                  <Moon className="w-4 h-4" />
-                )}
-              </Button>
-              <Button
-                onClick={() => handleNavigate('/resume-builder')}
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white shrink-0"
-              >
-                Create Resume
-              </Button>
+              {/* Theme Toggle */}
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleTheme}
+                  className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 p-2"
+                  title="Toggle theme"
+                >
+                  {theme === 'dark' ? (
+                    <Sun className="w-4 h-4" />
+                  ) : theme === 'light' ? (
+                    <Moon className="w-4 h-4" />
+                  ) : (
+                    <Monitor className="w-4 h-4" />
+                  )}
+                </Button>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={() => handleNavigate('/resume-builder')}
+                  size="sm"
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Create Resume
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Mobile */}
-      <nav className="md:hidden border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
-        <div className="flex justify-between items-center h-14 px-4">
-          <button
-            onClick={() => handleNavigate('/')}
-            className="flex items-center gap-2 rounded-md p-1.5"
-            aria-label="Home"
-          >
-            <div className="w-8 h-8 bg-blue-600 dark:bg-blue-500 rounded-lg flex items-center justify-center">
-              <FileText className="w-4 h-4 text-white" />
+      {/* Mobile Navigation */}
+      <nav className="md:hidden bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
+        <div className="px-4 sm:px-6">
+          <div className="flex justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-bold text-gray-900 dark:text-gray-100">RapidApply</span>
             </div>
-            <span className="font-semibold text-gray-900 dark:text-white">RapidApply</span>
-          </button>
 
-          <div className="flex items-center gap-1">
+            {/* Mobile Menu Button */}
             <Button
               variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="rounded-full text-gray-600 dark:text-gray-400"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
+              size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Menu"
+              className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 p-2"
             >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </Button>
           </div>
         </div>
 
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-4 py-3 space-y-0.5">
-            {mainNav.concat(moreNav).map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.path}
-                  onClick={() => handleNavigate(item.path)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium ${navLinkClass(
-                    isActive(item.path)
-                  )}`}
+          <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+            <div className="px-4 py-2 space-y-1">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.path}
+                    onClick={() => handleNavigate(item.path)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-sm font-medium transition-all duration-200 ${
+                      isActive(item.path)
+                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-200'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{item.title}</span>
+                    {item.badge && (
+                      <span className="ml-auto px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full font-medium">
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+              
+              <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+                <Button
+                  onClick={() => handleNavigate('/resume-builder')}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  {item.title}
-                </button>
-              );
-            })}
-            <div className="pt-3 mt-2 border-t border-gray-200 dark:border-gray-800">
-              <Button
-                onClick={() => handleNavigate('/resume-builder')}
-                className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
-              >
-                Create Resume
-              </Button>
+                  Create Resume
+                </Button>
+              </div>
             </div>
           </div>
         )}

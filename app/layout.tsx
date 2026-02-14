@@ -43,13 +43,12 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${openSans.variable} ${lato.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${openSans.variable} ${lato.variable} antialiased bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300`}
       >
         <ThemeProvider>
           <AppProvider>
             <CoverLetterProvider>
               <ResumeProvider>
-                <Navigation />
                 {children}
               </ResumeProvider>
             </CoverLetterProvider>
