@@ -6,6 +6,9 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import resumeRoutes from './routes/resumeRoutes.js';
+import settingsRoutes from './routes/settingsRoutes.js';
+import coverLetterRoutes from './routes/coverLetterRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -24,6 +27,9 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/resumes', resumeRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/cover-letters', coverLetterRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

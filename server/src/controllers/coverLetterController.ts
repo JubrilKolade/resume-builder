@@ -16,7 +16,7 @@ export const getCoverLetterById = async (req: Request, res: Response) => {
     try {
         // @ts-ignore
         const userId = req.user.id;
-        const letter = await CoverLetter.findOne({ _id: req.params.id, userId });
+        const letter = await CoverLetter.findOne({ _id: req.params.id as string, userId });
 
         if (!letter) {
             return res.status(404).json({ message: 'Cover letter not found' });
@@ -55,7 +55,7 @@ export const updateCoverLetter = async (req: Request, res: Response) => {
         const userId = req.user.id;
         const { personalInfo, recipientInfo, letterContent, template, style } = req.body;
 
-        const letter = await CoverLetter.findOne({ _id: req.params.id, userId });
+        const letter = await CoverLetter.findOne({ _id: req.params.id as string, userId });
 
         if (!letter) {
             return res.status(404).json({ message: 'Cover letter not found' });
@@ -78,7 +78,7 @@ export const deleteCoverLetter = async (req: Request, res: Response) => {
     try {
         // @ts-ignore
         const userId = req.user.id;
-        const letter = await CoverLetter.findOneAndDelete({ _id: req.params.id, userId });
+        const letter = await CoverLetter.findOneAndDelete({ _id: req.params.id as string, userId });
 
         if (!letter) {
             return res.status(404).json({ message: 'Cover letter not found' });
