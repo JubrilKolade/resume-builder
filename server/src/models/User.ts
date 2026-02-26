@@ -6,6 +6,7 @@ export interface IUser extends Document {
     email: string;
     password: string;
     name: string;
+    settings: any; // UserSettings structure from frontend
     createdAt: Date;
     updatedAt: Date;
     comparePassword(password: string): Promise<boolean>;
@@ -29,6 +30,10 @@ const UserSchema: Schema = new Schema(
             type: String,
             required: true,
             trim: true,
+        },
+        settings: {
+            type: Schema.Types.Mixed,
+            default: {},
         },
     },
     {
