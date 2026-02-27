@@ -47,10 +47,13 @@ The frontend will be available at `http://localhost:3000` and the backend at `ht
 ## Features
 
 - **Dynamic Resume Creation**: Build professional resumes with multiple templates.
+- **Cover Letter Builder**: Create and manage tailored cover letters.
+- **Interactive Dashboard**: Track total resumes, favorites, and recent activity.
+- **User Settings**: Customize preferences like default templates and layout.
 - **Real-time Preview**: See changes as you type.
-- **Export Options**: Download resumes in PDF and DOCX formats.
-- **Authentication**: Secure user accounts with JWT.
-- **Persistent Storage**: Save your resumes to MongoDB and access them from anywhere.
+- **Export Options**: Download documents in PDF and DOCX formats.
+- **Authentication**: Secure user accounts with JWT, including password recovery.
+- **Persistent Storage**: Save your data securely to MongoDB.
 
 ## Development
 

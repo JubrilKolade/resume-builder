@@ -65,6 +65,9 @@ This is the backend server for the RapidApply Resume Builder, built with Express
 ### Auth
 - `POST /api/auth/register`: Create a new user account.
 - `POST /api/auth/login`: Authenticate and receive a token.
+- `POST /api/auth/change-password`: Change user password (Protected).
+- `POST /api/auth/forgot-password`: Request a password reset token.
+- `POST /api/auth/reset-password`: Reset password using token.
 
 ### Resumes (Protected - requires Bearer Token)
 - `GET /api/resumes`: Get all resumes for the logged-in user.
@@ -72,6 +75,18 @@ This is the backend server for the RapidApply Resume Builder, built with Express
 - `GET /api/resumes/:id`: Get a specific resume by ID.
 - `PUT /api/resumes/:id`: Update an existing resume.
 - `DELETE /api/resumes/:id`: Delete a resume.
+
+### Cover Letters (Protected - requires Bearer Token)
+- `GET /api/cover-letters`: Get all cover letters for the logged-in user.
+- `POST /api/cover-letters`: Create a new cover letter.
+- `GET /api/cover-letters/:id`: Get a specific cover letter by ID.
+- `PUT /api/cover-letters/:id`: Update an existing cover letter.
+- `DELETE /api/cover-letters/:id`: Delete a cover letter.
+
+### Dashboard & Settings (Protected - requires Bearer Token)
+- `GET /api/dashboard/stats`: Get aggregated dashboard statistics.
+- `GET /api/settings`: Get user preferences.
+- `PUT /api/settings`: Update user preferences.
 
 ## License
 
