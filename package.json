@@ -1,7 +1,7 @@
 {
-  "name": "rapidapply-resumebuilder",
+  "name": "applyos",
   "version": "1.0.0",
-  "description": "A modern, fast, and intuitive resume builder built with Next.js 16, React 19, and Tailwind CSS 4. Create professional resumes in minutes with AI-powered assistance, real-time preview, and multiple export options.",
+  "description": "ApplyOS is a modern, fast, and intuitive resume builder built with Next.js 16, React 19, and Tailwind CSS 4.",
   "main": "index.js",
   "type": "module",
   "scripts": {

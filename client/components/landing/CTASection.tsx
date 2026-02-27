@@ -13,11 +13,11 @@ export default function CTASection({ onNavigate }: CTASectionProps) {
               Ready to get your dream job?
             </h2>
             <p className="text-white/90 text-xl mb-12 max-w-3xl font-medium leading-relaxed">
-              Join thousands of successful job seekers who used RapidApply to level up their careers. 
+              Join thousands of successful job seekers who used ApplyOS to level up their careers.
               Start building your professional resume for free today.
             </p>
             <div className="flex flex-col sm:flex-row gap-6">
-              <button 
+              <button
                 onClick={() => onNavigate('/resume-builder')}
                 className="bg-white text-slate-900 font-bold py-6 px-12 rounded-2xl text-xl shadow-2xl hover:bg-slate-100 transition-all duration-300 transform hover:scale-105"
               >

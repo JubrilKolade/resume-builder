@@ -58,7 +58,7 @@ export default function FooterSection() {
           </div>
         </div>
         <div className="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
-          <p>© 2024 RapidApply Resume Systems Inc. All rights reserved.</p>
+          <p>© 2024 ApplyOS Resume Systems Inc. All rights reserved.</p>
           <div className="flex gap-6">
             <a className="hover:text-blue-500 transition-colors" href="#">Terms of Service</a>
             <a className="hover:text-blue-500 transition-colors" href="#">Cookie Policy</a>

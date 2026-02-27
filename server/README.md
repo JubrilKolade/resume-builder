@@ -1,6 +1,6 @@
-# RapidApply Resume Builder - Backend
+# ApplyOS - Backend
 
-This is the backend server for the RapidApply Resume Builder, built with Express, Node.js, and MongoDB.
+This is the backend server for ApplyOS, built with Express, Node.js, and MongoDB.
 
 ## Features
 

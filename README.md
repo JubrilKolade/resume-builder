@@ -1,4 +1,4 @@
-# RapidApply Resume Builder
+# ApplyOS
 
 A modern, full-stack resume builder application.
 

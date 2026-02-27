@@ -9,21 +9,21 @@ interface AdminContextType {
   setIsAuthenticated: (authenticated: boolean) => void;
   currentUser: AdminUser | null;
   setCurrentUser: (user: AdminUser | null) => void;
-  
+
   // Analytics
   analytics: AdminAnalytics | null;
   setAnalytics: (analytics: AdminAnalytics) => void;
   isLoadingAnalytics: boolean;
   setIsLoadingAnalytics: (loading: boolean) => void;
-  
+
   // Settings
   adminSettings: AdminSettings;
   setAdminSettings: (settings: AdminSettings) => void;
-  
+
   // Admin users
   adminUsers: AdminUser[];
   setAdminUsers: (users: AdminUser[]) => void;
-  
+
   // Actions
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -105,25 +105,25 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     // In a real app, this would make an API call
     // For demo purposes, we'll use hardcoded credentials
-    if (email === 'admin@rapidapply.com' && password === 'admin123') {
+    if (email === 'admin@applyos.com' && password === 'admin123') {
       const user: AdminUser = {
         id: '1',
-        email: 'admin@rapidapply.com',
+        email: 'admin@applyos.com',
         role: 'admin',
         permissions: ['read', 'write', 'delete', 'admin'],
         lastLogin: new Date(),
         isActive: true,
       };
-      
+
       setIsAuthenticated(true);
       setCurrentUser(user);
-      
+
       // Load mock analytics
       await refreshAnalytics();
-      
+
       return true;
     }
-    
+
     return false;
   };
 
@@ -131,7 +131,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
     setCurrentUser(null);
     setAnalytics(null);
-    
+
     if (typeof window !== 'undefined') {
       localStorage.removeItem('adminAuth');
     }
@@ -139,12 +139,12 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshAnalytics = async (): Promise<void> => {
     setIsLoadingAnalytics(true);
-    
+
     try {
       // In a real app, this would fetch from an API
       // For demo purposes, we'll generate mock data
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+
       const mockAnalytics: AdminAnalytics = {
         overview: {
           totalUsers: 1247,
@@ -301,7 +301,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
           serverResponseTime: 0.8,
         },
       };
-      
+
       setAnalytics(mockAnalytics);
     } catch (error) {
       console.error('Error refreshing analytics:', error);
@@ -328,8 +328,8 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const toggleUserStatus = (id: string) => {
-    setAdminUsers(prev => 
-      prev.map(user => 
+    setAdminUsers(prev =>
+      prev.map(user =>
         user.id === id ? { ...user, isActive: !user.isActive } : user
       )
     );

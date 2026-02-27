@@ -19,15 +19,15 @@ export interface ExportOptions {
 export const importFromJSON = (file: File): Promise<ImportResult> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const content = e.target?.result as string;
         const data = JSON.parse(content);
-        
+
         // Validate the imported data structure
         const validation = validateResumeData(data);
-        
+
         if (validation.isValid) {
           resolve({
             success: true,
@@ -47,14 +47,14 @@ export const importFromJSON = (file: File): Promise<ImportResult> => {
         });
       }
     };
-    
+
     reader.onerror = () => {
       resolve({
         success: false,
         error: 'Failed to read file',
       });
     };
-    
+
     reader.readAsText(file);
   });
 };
@@ -62,13 +62,13 @@ export const importFromJSON = (file: File): Promise<ImportResult> => {
 export const importFromCSV = (file: File): Promise<ImportResult> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const content = e.target?.result as string;
         const lines = content.split('\n');
         const headers = lines[0].split(',').map(h => h.trim());
-        
+
         const data: Partial<ResumeData> = {
           personalInfo: {
             fullName: '',
@@ -80,16 +80,16 @@ export const importFromCSV = (file: File): Promise<ImportResult> => {
           education: [],
           skills: [],
         };
-        
+
         // Simple CSV parsing - in production, you'd want a more robust parser
         for (let i = 1; i < lines.length; i++) {
           const values = lines[i].split(',').map(v => v.trim());
           const row: any = {};
-          
+
           headers.forEach((header, index) => {
             row[header] = values[index] || '';
           });
-          
+
           // Map CSV rows to resume data based on headers
           if (row.type === 'personal') {
             data.personalInfo = {
@@ -135,7 +135,7 @@ export const importFromCSV = (file: File): Promise<ImportResult> => {
             });
           }
         }
-        
+
         resolve({
           success: true,
           data,
@@ -148,7 +148,7 @@ export const importFromCSV = (file: File): Promise<ImportResult> => {
         });
       }
     };
-    
+
     reader.readAsText(file);
   });
 };
@@ -193,7 +193,7 @@ export const importLinkedInProfile = (profileData: any): ImportResult => {
         level: skill.level,
       })) || [],
     };
-    
+
     return {
       success: true,
       data,
@@ -214,19 +214,19 @@ export const exportToJSON = (data: ResumeData, options: ExportOptions = {}): str
     metadata: {
       exportedAt: new Date().toISOString(),
       version: '1.0',
-      format: 'rapidapply-resume',
+      format: 'applyos-resume',
     },
   } : data;
-  
+
   return JSON.stringify(exportData, null, options.prettyPrint ? 2 : 0);
 };
 
 export const exportToCSV = (data: ResumeData): string => {
   const rows: string[] = [];
-  
+
   // Headers
   rows.push('type,fullName,email,phone,location,linkedin,website,summary,title,company,position,startDate,endDate,current,description,institution,degree,field,gpa,skillName,category,level');
-  
+
   // Personal info
   rows.push([
     'personal',
@@ -240,7 +240,7 @@ export const exportToCSV = (data: ResumeData): string => {
     data.personalInfo.title || '',
     '', '', '', '', '', '', '', '', '', '', '', '', ''
   ].join(','));
-  
+
   // Work experience
   data.workExperience?.forEach(work => {
     rows.push([
@@ -255,7 +255,7 @@ export const exportToCSV = (data: ResumeData): string => {
       '', '', '', '', '', '', ''
     ].join(','));
   });
-  
+
   // Education
   data.education?.forEach(edu => {
     rows.push([
@@ -269,7 +269,7 @@ export const exportToCSV = (data: ResumeData): string => {
       '', '', ''
     ].join(','));
   });
-  
+
   // Skills
   data.skills?.forEach(skill => {
     rows.push([
@@ -281,7 +281,7 @@ export const exportToCSV = (data: ResumeData): string => {
       skill.level?.toString() || ''
     ].join(','));
   });
-  
+
   return rows.join('\n');
 };
 
@@ -301,7 +301,7 @@ export const exportToXML = (data: ResumeData): string => {
     '  </personalInfo>',
     '  <workExperience>',
   ];
-  
+
   data.workExperience?.forEach(work => {
     xml.push('    <experience>');
     xml.push(`      <company>${escapeXml(work.company)}</company>`);
@@ -313,10 +313,10 @@ export const exportToXML = (data: ResumeData): string => {
     xml.push(`      <description>${escapeXml(work.description?.join(';') || '')}</description>`);
     xml.push('    </experience>');
   });
-  
+
   xml.push('  </workExperience>');
   xml.push('  <education>');
-  
+
   data.education?.forEach(edu => {
     xml.push('    <education>');
     xml.push(`      <institution>${escapeXml(edu.institution)}</institution>`);
@@ -329,10 +329,10 @@ export const exportToXML = (data: ResumeData): string => {
     xml.push(`      <gpa>${escapeXml(edu.gpa || '')}</gpa>`);
     xml.push('    </education>');
   });
-  
+
   xml.push('  </education>');
   xml.push('  <skills>');
-  
+
   data.skills?.forEach(skill => {
     xml.push('    <skill>');
     xml.push(`      <name>${escapeXml(skill.name)}</name>`);
@@ -340,10 +340,10 @@ export const exportToXML = (data: ResumeData): string => {
     xml.push(`      <level>${skill.level || ''}</level>`);
     xml.push('    </skill>');
   });
-  
+
   xml.push('  </skills>');
   xml.push('</resume>');
-  
+
   return xml.join('\n');
 };
 
@@ -354,7 +354,7 @@ export const exportCoverLetterToJSON = (data: CoverLetterData): string => {
     metadata: {
       exportedAt: new Date().toISOString(),
       version: '1.0',
-      format: 'rapidapply-cover-letter',
+      format: 'applyos-cover-letter',
     },
   }, null, 2);
 };

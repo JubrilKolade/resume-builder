@@ -352,7 +352,7 @@ export default function DownloadPage() {
                 <Button
                   variant="outline"
                   className="w-full"
-                  onClick={() => alert('Contact support at: support@rapidapply.com')}
+                  onClick={() => alert('Contact support at: support@applyos.com')}
                 >
                   Contact Support
                 </Button>

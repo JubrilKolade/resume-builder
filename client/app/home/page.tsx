@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Navigation from '@/components/Navigation';
-import { 
-  FileText, 
-  Layout, 
-  Settings, 
-  PenTool, 
-  Upload, 
-  Share2, 
-  HelpCircle, 
+import {
+  FileText,
+  Layout,
+  Settings,
+  PenTool,
+  Upload,
+  Share2,
+  HelpCircle,
   Shield,
   Plus,
   ArrowRight,
@@ -192,17 +192,17 @@ export default function HomePage() {
               Welcome to Your Resume Hub
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Navigate to any part of resume builder from this central dashboard. 
+              Navigate to any part of resume builder from this central dashboard.
               Create, manage, and share professional resumes with AI-powered assistance.
             </p>
-            
+
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
               {quickActions.map((action) => {
                 const Icon = action.icon;
                 return (
-                  <Card 
-                    key={action.title} 
+                  <Card
+                    key={action.title}
                     className="hover:shadow-xl transition-all duration-300 cursor-pointer group"
                     onClick={() => handleNavigate(action.path)}
                   >
@@ -231,12 +231,12 @@ export default function HomePage() {
         <div className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose RapidApply?</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose ApplyOS?</h2>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                 Professional resume building with modern tools and AI assistance
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
@@ -263,7 +263,7 @@ export default function HomePage() {
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Platform Statistics</h2>
               <p className="text-lg text-gray-600">Join thousands of professionals building their careers</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
@@ -289,7 +289,7 @@ export default function HomePage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Explore All Features</h2>
               <p className="text-lg text-gray-600 mb-8">Everything you need for professional resume building</p>
-              
+
               {/* Search */}
               <div className="max-w-md mx-auto mb-8">
                 <div className="relative">
@@ -304,18 +304,17 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredItems.map((item) => {
                 const Icon = item.icon;
                 const isHovered = hoveredCard === item.title;
-                
+
                 return (
-                  <Card 
-                    key={item.title} 
-                    className={`hover:shadow-2xl transition-all duration-300 cursor-pointer group transform hover:scale-105 ${
-                      isHovered ? 'scale-105' : ''
-                    }`}
+                  <Card
+                    key={item.title}
+                    className={`hover:shadow-2xl transition-all duration-300 cursor-pointer group transform hover:scale-105 ${isHovered ? 'scale-105' : ''
+                      }`}
                     onClick={() => handleNavigate(item.path)}
                     onMouseEnter={() => setHoveredCard(item.title)}
                     onMouseLeave={() => setHoveredCard(null)}
@@ -357,7 +356,7 @@ export default function HomePage() {
                           ))}
                         </div>
                       )}
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="flex items-center text-blue-600 group-hover:text-blue-700 transition-colors">
                           <span className="font-medium">Get Started</span>
@@ -385,7 +384,7 @@ export default function HomePage() {
                 <p className="text-gray-600 mb-6">
                   Try adjusting your search terms or browse all features above
                 </p>
-                <Button 
+                <Button
                   onClick={() => setSearchTerm('')}
                   variant="outline"
                   className="bg-white hover:bg-gray-50"
@@ -403,7 +402,7 @@ export default function HomePage() {
             <div className="mb-8">
               <h3 className="text-2xl font-bold mb-4">Ready to Build Your Career?</h3>
               <p className="text-gray-300 mb-6 text-lg">
-                Join thousands of professionals who have already created their resumes with RapidApply
+                Join thousands of professionals who have already created their resumes with ApplyOS
               </p>
               <Button
                 onClick={() => handleNavigate('/resume-builder')}
@@ -414,14 +413,14 @@ export default function HomePage() {
                 Start Building Now
               </Button>
             </div>
-            
+
             <div className="border-t border-gray-800 pt-8">
               <div className="flex justify-center gap-8 text-sm text-gray-400 mb-4">
                 <span>Version 2.0</span>
                 <span>•</span>
                 <span>Built with Next.js 16</span>
                 <span>•</span>
-                <span> 2024 RapidApply</span>
+                <span> 2024 ApplyOS</span>
               </div>
               <div className="flex justify-center gap-6">
                 <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">

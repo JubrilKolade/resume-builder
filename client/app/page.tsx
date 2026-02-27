@@ -278,13 +278,13 @@ export default function HomePage() {
         {/* Footer */}
         <footer className="mt-16 pt-8 box-shadow">
           <div className="text-center text-gray-600">
-            <p className="mb-2">RapidApply Resume Builder - Professional Resume Management</p>
+            <p className="mb-2">ApplyOS Resume Builder - Professional Resume Management</p>
             <div className="flex justify-center gap-6 text-sm">
               <span>Version 2.0</span>
               <span>•</span>
               <span>Built with Next.js 16</span>
               <span>•</span>
-              <span>© 2024 RapidApply</span>
+              <span>© 2024 ApplyOS</span>
             </div>
           </div>
         </footer>
