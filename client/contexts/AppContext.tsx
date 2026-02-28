@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import { SavedResume, FilterOptions, DashboardView, DashboardStats } from '@/types/dashboard';
 import { UserSettings } from '@/types/settings';
 import { useResumes } from '@/hooks/useResumes';
+import { useSettings } from '@/hooks/useSettings';
 
 interface AppContextType {
   // Dashboard state
@@ -119,6 +120,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     deleteResume: deleteResumeApi
   } = useResumes();
 
+  const { settings: serverSettings, isLoading: isSettingsLoading } = useSettings();
+  const [userSettings, setUserSettings] = useState<UserSettings>(defaultUserSettings);
+
+  useEffect(() => {
+    if (serverSettings) {
+      setUserSettings(serverSettings);
+    }
+  }, [serverSettings]);
+
   const [currentResume, setCurrentResume] = useState<SavedResume | null>(null);
   const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
     totalResumes: 0,
@@ -133,19 +143,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   });
   const [filterOptions, setFilterOptions] = useState<FilterOptions>(defaultFilterOptions);
   const [dashboardView, setDashboardView] = useState<DashboardView>(defaultDashboardView);
-  const [userSettings, setUserSettings] = useState<UserSettings>(defaultUserSettings);
   const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  // Load persistence from settings only (we still use localStorage for settings for now)
+  // Load persistence (localStorage)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
-        const userSettingsData = localStorage.getItem('userSettings');
-        if (userSettingsData) {
-          setUserSettings(JSON.parse(userSettingsData));
-        }
-
         const dashboardViewData = localStorage.getItem('dashboardView');
         if (dashboardViewData) {
           setDashboardView(JSON.parse(dashboardViewData));
@@ -155,12 +159,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       }
     }
   }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('userSettings', JSON.stringify(userSettings));
-    }
-  }, [userSettings]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

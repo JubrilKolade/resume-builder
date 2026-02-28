@@ -1,18 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useApp } from '@/contexts/AppContext';
 import { useResume } from '@/contexts/ResumeContext';
 import { UserSettings } from '@/types/settings';
 import { TemplateType } from '@/types/resume';
-import { 
-  User, 
-  Palette, 
-  Bell, 
-  Shield, 
-  Download, 
+import {
+  User,
+  Palette,
+  Bell,
+  Shield,
+  Download,
   Save,
   Eye,
   EyeOff,
@@ -23,15 +23,16 @@ import {
   Smartphone
 } from 'lucide-react';
 
+import { useSettings } from '@/hooks/useSettings';
+
 export default function SettingsPage() {
-  const { userSettings, setUserSettings, addNotification } = useApp();
+  const { addNotification } = useApp();
   const { setSelectedTemplate, setResumeStyle } = useResume();
-  
+  const { settings: serverSettings, updateSettings, isLoading: isSettingsLoading } = useSettings();
+
   const [activeTab, setActiveTab] = useState<'profile' | 'preferences' | 'privacy' | 'notifications' | 'export'>('profile');
   const [showPassword, setShowPassword] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  
-  const [localSettings, setLocalSettings] = useState<UserSettings>(userSettings);
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: User },
@@ -41,15 +42,24 @@ export default function SettingsPage() {
     { id: 'export', label: 'Export', icon: Download },
   ];
 
+  const [localSettings, setLocalSettings] = useState<UserSettings | null>(null);
+
+  useEffect(() => {
+    if (serverSettings && !localSettings) {
+      setLocalSettings(serverSettings);
+    }
+  }, [serverSettings, localSettings]);
+
   const handleSave = async () => {
+    if (!localSettings) return;
     setIsSaving(true);
     try {
-      setUserSettings(localSettings);
-      
+      await updateSettings(localSettings);
+
       // Apply template and style preferences
       setSelectedTemplate(localSettings.preferences.defaultTemplate);
       setResumeStyle(localSettings.preferences.defaultStyle);
-      
+
       addNotification({
         type: 'success',
         title: 'Settings Saved',
@@ -65,6 +75,10 @@ export default function SettingsPage() {
       setIsSaving(false);
     }
   };
+
+  if (isSettingsLoading || !localSettings) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
 
   const handleReset = () => {
     if (confirm('Are you sure you want to reset all settings to default values?')) {
@@ -118,7 +132,7 @@ export default function SettingsPage() {
           includeMetadata: true,
         },
       };
-      
+
       setLocalSettings(defaultSettings);
       addNotification({
         type: 'info',
@@ -129,53 +143,68 @@ export default function SettingsPage() {
   };
 
   const updateProfile = (field: string, value: string) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        [field]: value,
-      },
-    }));
+    setLocalSettings(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        profile: {
+          ...prev.profile,
+          [field]: value,
+        },
+      };
+    });
   };
 
   const updatePreferences = (field: string, value: any) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        [field]: value,
-      },
-    }));
+    setLocalSettings(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        preferences: {
+          ...prev.preferences,
+          [field]: value,
+        },
+      };
+    });
   };
 
   const updatePrivacy = (field: string, value: any) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      privacy: {
-        ...prev.privacy,
-        [field]: value,
-      },
-    }));
+    setLocalSettings(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        privacy: {
+          ...prev.privacy,
+          [field]: value,
+        },
+      };
+    });
   };
 
   const updateNotifications = (field: string, value: boolean) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      notifications: {
-        ...prev.notifications,
-        [field]: value,
-      },
-    }));
+    setLocalSettings(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        notifications: {
+          ...prev.notifications,
+          [field]: value,
+        },
+      };
+    });
   };
 
   const updateExport = (field: string, value: any) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      export: {
-        ...prev.export,
-        [field]: value,
-      },
-    }));
+    setLocalSettings(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        export: {
+          ...prev.export,
+          [field]: value,
+        },
+      };
+    });
   };
 
   return (
@@ -199,11 +228,10 @@ export default function SettingsPage() {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                          activeTab === tab.id
-                            ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600'
-                            : 'text-gray-600 hover:bg-gray-50'
-                        }`}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === tab.id
+                          ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600'
+                          : 'text-gray-600 hover:bg-gray-50'
+                          }`}
                       >
                         <Icon className="w-5 h-5" />
                         <span className="font-medium">{tab.label}</span>
@@ -269,7 +297,7 @@ export default function SettingsPage() {
                         />
                       </div>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Email
@@ -281,7 +309,7 @@ export default function SettingsPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -306,7 +334,7 @@ export default function SettingsPage() {
                         />
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -331,7 +359,7 @@ export default function SettingsPage() {
                         />
                       </div>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Bio
@@ -365,7 +393,7 @@ export default function SettingsPage() {
                           <option value="creative">Creative</option>
                         </select>
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Language
@@ -382,7 +410,7 @@ export default function SettingsPage() {
                         </select>
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -398,7 +426,7 @@ export default function SettingsPage() {
                           <option value="system">System</option>
                         </select>
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Date Format
@@ -414,7 +442,7 @@ export default function SettingsPage() {
                         </select>
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -429,7 +457,7 @@ export default function SettingsPage() {
                           <option value="list">List</option>
                         </select>
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Items per Page
@@ -446,7 +474,7 @@ export default function SettingsPage() {
                         </select>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
@@ -463,7 +491,7 @@ export default function SettingsPage() {
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="font-medium text-gray-900">Show Tips</div>
@@ -501,7 +529,7 @@ export default function SettingsPage() {
                           <option value="private">Private</option>
                         </select>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="font-medium text-gray-900">Analytics</div>
@@ -517,7 +545,7 @@ export default function SettingsPage() {
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="font-medium text-gray-900">Cookies</div>
@@ -533,7 +561,7 @@ export default function SettingsPage() {
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="font-medium text-gray-900">Two-Factor Authentication</div>
@@ -575,7 +603,7 @@ export default function SettingsPage() {
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Smartphone className="w-5 h-5 text-gray-400" />
@@ -594,7 +622,7 @@ export default function SettingsPage() {
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="font-medium text-gray-900">New Features</div>
@@ -610,7 +638,7 @@ export default function SettingsPage() {
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="font-medium text-gray-900">Security Alerts</div>
@@ -648,7 +676,7 @@ export default function SettingsPage() {
                           <option value="txt">TXT</option>
                         </select>
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           PDF Quality
@@ -664,7 +692,7 @@ export default function SettingsPage() {
                         </select>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
