@@ -6,6 +6,7 @@ import { AppProvider } from "@/contexts/AppContext";
 import { CoverLetterProvider } from "@/contexts/CoverLetterContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Navigation from "@/components/Navigation";
+import Providers from "@/components/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,13 +47,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${openSans.variable} ${lato.variable} antialiased bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300`}
       >
         <ThemeProvider>
-          <AppProvider>
-            <CoverLetterProvider>
-              <ResumeProvider>
-                {children}
-              </ResumeProvider>
-            </CoverLetterProvider>
-          </AppProvider>
+          <Providers>
+            <AppProvider>
+              <CoverLetterProvider>
+                <ResumeProvider>
+                  {children}
+                </ResumeProvider>
+              </CoverLetterProvider>
+            </AppProvider>
+          </Providers>
         </ThemeProvider>
       </body>
     </html>
