@@ -8,18 +8,18 @@ import { useApp } from '@/contexts/AppContext';
 import { useResume } from '@/contexts/ResumeContext';
 import { SavedResume, FilterOptions } from '@/types/dashboard';
 import { TemplateType } from '@/types/resume';
-import { 
-  Search, 
-  Filter, 
-  Grid, 
-  List, 
-  Plus, 
-  Edit, 
-  Copy, 
-  Trash2, 
-  Download, 
-  Share, 
-  Heart, 
+import {
+  Search,
+  Filter,
+  Grid,
+  List,
+  Plus,
+  Edit,
+  Copy,
+  Trash2,
+  Download,
+  Share,
+  Heart,
   MoreHorizontal,
   Calendar,
   Eye
@@ -33,10 +33,10 @@ import {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { 
-    savedResumes, 
-    setSavedResumes, 
-    currentResume, 
+  const {
+    savedResumes,
+    setSavedResumes,
+    currentResume,
     setCurrentResume,
     dashboardStats,
     filterOptions,
@@ -48,9 +48,9 @@ export default function DashboardPage() {
     toggleFavorite,
     addNotification
   } = useApp();
-  
+
   const { setResumeData, setSelectedTemplate, setResumeStyle } = useResume();
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTemplate, setSelectedTemplateFilter] = useState<TemplateType | 'all'>('all');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
@@ -71,19 +71,19 @@ export default function DashboardPage() {
 
   // Filter and sort resumes
   const filteredResumes = savedResumes
-    .filter(resume => {
+    .filter((resume: SavedResume) => {
       const matchesSearch = resume.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          resume.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          resume.resumeData.personalInfo.fullName.toLowerCase().includes(searchTerm.toLowerCase());
-      
+        resume.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        resume.resumeData.personalInfo.fullName.toLowerCase().includes(searchTerm.toLowerCase());
+
       const matchesTemplate = selectedTemplate === 'all' || resume.template === selectedTemplate;
       const matchesFavorites = !showFavoritesOnly || resume.isFavorite;
-      
+
       return matchesSearch && matchesTemplate && matchesFavorites;
     })
-    .sort((a, b) => {
+    .sort((a: SavedResume, b: SavedResume) => {
       let comparison = 0;
-      
+
       switch (sortBy) {
         case 'name':
           comparison = a.title.localeCompare(b.title);
@@ -98,7 +98,7 @@ export default function DashboardPage() {
           comparison = new Date(a.lastAccessed).getTime() - new Date(b.lastAccessed).getTime();
           break;
       }
-      
+
       return sortOrder === 'asc' ? comparison : -comparison;
     });
 
@@ -116,18 +116,18 @@ export default function DashboardPage() {
     router.push('/edit');
   };
 
-  const handleDuplicate = (resume: SavedResume) => {
-    duplicateResume(resume.id);
+  const handleDuplicate = async (resume: SavedResume) => {
+    await duplicateResume(resume.id);
   };
 
-  const handleDelete = (resume: SavedResume) => {
+  const handleDelete = async (resume: SavedResume) => {
     if (confirm(`Are you sure you want to delete "${resume.title}"?`)) {
-      deleteResume(resume.id);
+      await deleteResume(resume.id);
     }
   };
 
-  const handleToggleFavorite = (resume: SavedResume) => {
-    toggleFavorite(resume.id);
+  const handleToggleFavorite = async (resume: SavedResume) => {
+    await toggleFavorite(resume.id);
   };
 
   const handleShare = (resume: SavedResume) => {
@@ -195,7 +195,7 @@ export default function DashboardPage() {
               <div className="text-2xl font-bold">{dashboardStats.totalResumes}</div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">Recent</CardTitle>
@@ -204,7 +204,7 @@ export default function DashboardPage() {
               <div className="text-2xl font-bold">{dashboardStats.recentResumes}</div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">Favorites</CardTitle>
@@ -213,14 +213,14 @@ export default function DashboardPage() {
               <div className="text-2xl font-bold">{dashboardStats.favoriteResumes}</div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">Most Used Template</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold capitalize">
-                {Object.entries(dashboardStats.templatesUsed).reduce((a, b) => 
+                {Object.entries(dashboardStats.templatesUsed).reduce((a: [string, number], b: [string, number]) =>
                   a[1] > b[1] ? a : b
                 )[0] || 'None'}
               </div>
@@ -312,7 +312,7 @@ export default function DashboardPage() {
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No resumes found</h3>
               <p className="text-gray-600 mb-6">
-                {savedResumes.length === 0 
+                {savedResumes.length === 0
                   ? 'Create your first resume to get started'
                   : 'Try adjusting your filters or search terms'
                 }
@@ -326,11 +326,11 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className={dashboardView.layout === 'grid' 
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' 
+          <div className={dashboardView.layout === 'grid'
+            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
             : 'space-y-4'
           }>
-            {filteredResumes.map((resume) => (
+            {filteredResumes.map((resume: SavedResume) => (
               <Card key={resume.id} className="hover:shadow-lg transition-shadow cursor-pointer shadow-lg">
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
@@ -373,7 +373,7 @@ export default function DashboardPage() {
                           <Heart className="w-4 h-4 mr-2" />
                           {resume.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
                         </DropdownMenuItem>
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           onClick={() => handleDelete(resume)}
                           className="text-red-600"
                         >
@@ -391,7 +391,7 @@ export default function DashboardPage() {
                       <span className="capitalize">{resume.template} Template</span>
                       <span>{resume.resumeData.personalInfo.fullName}</span>
                     </div>
-                    
+
                     {/* Dates */}
                     <div className="flex items-center justify-between text-xs text-gray-500">
                       <div className="flex items-center gap-1">
@@ -407,7 +407,7 @@ export default function DashboardPage() {
                     {/* Tags */}
                     {resume.tags && resume.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1">
-                        {resume.tags.map((tag, index) => (
+                        {resume.tags.map((tag: string, index: number) => (
                           <span
                             key={index}
                             className="px-2 py-1 bg-linear-to-br from-blue-50 to-indigo-50 text-blue-800 text-xs rounded-full shadow-lg"

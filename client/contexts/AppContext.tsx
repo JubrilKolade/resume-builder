@@ -1,8 +1,7 @@
-'use client';
-
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { SavedResume, FilterOptions, DashboardView, DashboardStats } from '@/types/dashboard';
 import { UserSettings } from '@/types/settings';
+import { useResumes } from '@/hooks/useResumes';
 
 interface AppContextType {
   // Dashboard state
@@ -16,23 +15,23 @@ interface AppContextType {
   setFilterOptions: (options: Partial<FilterOptions>) => void;
   dashboardView: DashboardView;
   setDashboardView: (view: Partial<DashboardView>) => void;
-  
+
   // User settings
   userSettings: UserSettings;
   setUserSettings: (settings: UserSettings) => void;
-  
+
   // App state
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
   notifications: Notification[];
   addNotification: (notification: Omit<Notification, 'id' | 'timestamp'>) => void;
   removeNotification: (id: string) => void;
-  
+
   // Actions
-  saveResume: (resume: SavedResume) => void;
-  deleteResume: (id: string) => void;
-  duplicateResume: (id: string) => void;
-  toggleFavorite: (id: string) => void;
+  saveResume: (resume: SavedResume) => Promise<void>;
+  deleteResume: (id: string) => Promise<void>;
+  duplicateResume: (id: string) => Promise<void>;
+  toggleFavorite: (id: string) => Promise<void>;
 }
 
 interface Notification {
@@ -112,7 +111,14 @@ const defaultUserSettings: UserSettings = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  const [savedResumes, setSavedResumes] = useState<SavedResume[]>([]);
+  const {
+    resumes: savedResumes,
+    isLoading: isResumesLoading,
+    createResume,
+    updateResume,
+    deleteResume: deleteResumeApi
+  } = useResumes();
+
   const [currentResume, setCurrentResume] = useState<SavedResume | null>(null);
   const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
     totalResumes: 0,
@@ -131,21 +137,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  // Load data from localStorage on mount
+  // Load persistence from settings only (we still use localStorage for settings for now)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
-        const savedResumesData = localStorage.getItem('savedResumes');
-        if (savedResumesData) {
-          const resumes = JSON.parse(savedResumesData);
-          setSavedResumes(resumes.map((r: any) => ({
-            ...r,
-            createdAt: new Date(r.createdAt),
-            updatedAt: new Date(r.updatedAt),
-            lastAccessed: new Date(r.lastAccessed),
-          })));
-        }
-
         const userSettingsData = localStorage.getItem('userSettings');
         if (userSettingsData) {
           setUserSettings(JSON.parse(userSettingsData));
@@ -160,13 +155,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       }
     }
   }, []);
-
-  // Save data to localStorage whenever it changes
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('savedResumes', JSON.stringify(savedResumes));
-    }
-  }, [savedResumes]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -184,7 +172,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const stats: DashboardStats = {
       totalResumes: savedResumes.length,
-      recentResumes: savedResumes.filter(r => 
+      recentResumes: savedResumes.filter(r =>
         new Date(r.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
       ).length,
       favoriteResumes: savedResumes.filter(r => r.isFavorite).length,
@@ -205,7 +193,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       timestamp: new Date(),
     };
     setNotifications(prev => [...prev, newNotification]);
-    
+
     if (notification.autoClose !== false) {
       setTimeout(() => {
         removeNotification(newNotification.id);
@@ -217,66 +205,89 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
-  const saveResume = (resume: SavedResume) => {
-    setSavedResumes(prev => {
-      const existingIndex = prev.findIndex(r => r.id === resume.id);
-      if (existingIndex >= 0) {
-        const updated = [...prev];
-        updated[existingIndex] = {
-          ...resume,
-          updatedAt: new Date(),
-          lastAccessed: new Date(),
-        };
-        return updated;
+  const saveResume = async (resume: SavedResume) => {
+    try {
+      if (resume.id && !resume.id.startsWith('temp-')) {
+        await updateResume({ id: resume.id, data: resume });
       } else {
-        return [...prev, resume];
+        const { id, ...resumeData } = resume;
+        await createResume(resumeData);
       }
-    });
-    addNotification({
-      type: 'success',
-      title: 'Resume Saved',
-      message: `"${resume.title}" has been saved successfully.`,
-    });
-  };
-
-  const deleteResume = (id: string) => {
-    const resume = savedResumes.find(r => r.id === id);
-    setSavedResumes(prev => prev.filter(r => r.id !== id));
-    if (resume) {
-      addNotification({
-        type: 'info',
-        title: 'Resume Deleted',
-        message: `"${resume.title}" has been deleted.`,
-      });
-    }
-  };
-
-  const duplicateResume = (id: string) => {
-    const resume = savedResumes.find(r => r.id === id);
-    if (resume) {
-      const duplicated: SavedResume = {
-        ...resume,
-        id: Date.now().toString(),
-        title: `${resume.title} (Copy)`,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        lastAccessed: new Date(),
-      };
-      setSavedResumes(prev => [...prev, duplicated]);
       addNotification({
         type: 'success',
-        title: 'Resume Duplicated',
-        message: `"${resume.title}" has been duplicated.`,
+        title: 'Resume Saved',
+        message: `"${resume.title}" has been saved successfully.`,
+      });
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Save Failed',
+        message: 'Could not save the resume to the server.',
       });
     }
   };
 
-  const toggleFavorite = (id: string) => {
-    setSavedResumes(prev => 
-      prev.map(r => 
-        r.id === id ? { ...r, isFavorite: !r.isFavorite } : r
-      )
-    );
+  const deleteResume = async (id: string) => {
+    const resume = savedResumes.find(r => r.id === id);
+    try {
+      await deleteResumeApi(id);
+      if (resume) {
+        addNotification({
+          type: 'info',
+          title: 'Resume Deleted',
+          message: `"${resume.title}" has been deleted.`,
+        });
+      }
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Delete Failed',
+        message: 'Could not delete the resume from the server.',
+      });
+    }
+  };
+
+  const duplicateResume = async (id: string) => {
+    const resume = savedResumes.find(r => r.id === id);
+    if (resume) {
+      try {
+        const { id: _, createdAt, updatedAt, lastAccessed, ...rest } = resume;
+        const duplicated = {
+          ...rest,
+          title: `${resume.title} (Copy)`,
+        };
+        await createResume(duplicated);
+        addNotification({
+          type: 'success',
+          title: 'Resume Duplicated',
+          message: `"${resume.title}" has been duplicated.`,
+        });
+      } catch (error) {
+        addNotification({
+          type: 'error',
+          title: 'Duplicate Failed',
+          message: 'Could not duplicate the resume on the server.',
+        });
+      }
+    }
+  };
+
+  const toggleFavorite = async (id: string) => {
+    const resume = savedResumes.find(r => r.id === id);
+    if (resume) {
+      try {
+        await updateResume({
+          id,
+          data: { ...resume, isFavorite: !resume.isFavorite }
+        });
+      } catch (error) {
+        addNotification({
+          type: 'error',
+          title: 'Update Failed',
+          message: 'Could not update favorite status.',
+        });
+      }
+    }
   };
 
   const updateFilterOptions = (options: Partial<FilterOptions>) => {
@@ -291,7 +302,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     <AppContext.Provider
       value={{
         savedResumes,
-        setSavedResumes,
+        setSavedResumes: () => { }, // No-op as TanStack handles this
         currentResume,
         setCurrentResume,
         dashboardStats,
@@ -302,7 +313,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setDashboardView: updateDashboardView,
         userSettings,
         setUserSettings,
-        isLoading,
+        isLoading: isResumesLoading || isLoading,
         setIsLoading,
         notifications,
         addNotification,
