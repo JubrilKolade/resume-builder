@@ -31,14 +31,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { useDashboardStats } from '@/hooks/useDashboardStats';
+
 export default function DashboardPage() {
   const router = useRouter();
+  const { data: serverStats, isLoading: isStatsLoading } = useDashboardStats();
   const {
     savedResumes,
     setSavedResumes,
     currentResume,
     setCurrentResume,
-    dashboardStats,
+    dashboardStats: localStats,
     filterOptions,
     setFilterOptions,
     dashboardView,
@@ -48,6 +51,8 @@ export default function DashboardPage() {
     toggleFavorite,
     addNotification
   } = useApp();
+
+  const stats = serverStats || localStats;
 
   const { setResumeData, setSelectedTemplate, setResumeStyle } = useResume();
 
@@ -192,7 +197,7 @@ export default function DashboardPage() {
               <CardTitle className="text-sm font-medium text-gray-600">Total Resumes</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardStats.totalResumes}</div>
+              <div className="text-2xl font-bold">{stats.totalResumes}</div>
             </CardContent>
           </Card>
 
@@ -201,7 +206,7 @@ export default function DashboardPage() {
               <CardTitle className="text-sm font-medium text-gray-600">Recent</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardStats.recentResumes}</div>
+              <div className="text-2xl font-bold">{stats.recentResumes}</div>
             </CardContent>
           </Card>
 
@@ -210,7 +215,7 @@ export default function DashboardPage() {
               <CardTitle className="text-sm font-medium text-gray-600">Favorites</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardStats.favoriteResumes}</div>
+              <div className="text-2xl font-bold">{stats.favoriteResumes}</div>
             </CardContent>
           </Card>
 
@@ -220,7 +225,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold capitalize">
-                {Object.entries(dashboardStats.templatesUsed).reduce((a: [string, number], b: [string, number]) =>
+                {Object.entries(stats.templatesUsed).reduce((a, b) =>
                   a[1] > b[1] ? a : b
                 )[0] || 'None'}
               </div>
