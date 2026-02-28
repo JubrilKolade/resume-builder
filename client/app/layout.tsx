@@ -7,6 +7,7 @@ import { CoverLetterProvider } from "@/contexts/CoverLetterContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Navigation from "@/components/Navigation";
 import Providers from "@/components/Providers";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,13 +49,15 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <Providers>
-            <AppProvider>
-              <CoverLetterProvider>
-                <ResumeProvider>
-                  {children}
-                </ResumeProvider>
-              </CoverLetterProvider>
-            </AppProvider>
+            <AuthProvider>
+              <AppProvider>
+                <CoverLetterProvider>
+                  <ResumeProvider>
+                    {children}
+                  </ResumeProvider>
+                </CoverLetterProvider>
+              </AppProvider>
+            </AuthProvider>
           </Providers>
         </ThemeProvider>
       </body>
