@@ -21,4 +21,27 @@ api.interceptors.request.use(
     }
 );
 
+// Add a response interceptor to handle global errors
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        // Handle 401 Unauthorized
+        if (error.response?.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            if (typeof window !== 'undefined') {
+                window.location.href = '/login';
+            }
+        }
+
+        // Dispatch custom event for notifications
+        if (typeof window !== 'undefined') {
+            const message = error.response?.data?.message || error.message || 'Something went wrong';
+            window.dispatchEvent(new CustomEvent('api-error', { detail: message }));
+        }
+
+        return Promise.reject(error);
+    }
+);
+
 export default api;

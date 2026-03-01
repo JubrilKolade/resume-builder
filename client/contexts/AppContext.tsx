@@ -184,6 +184,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setDashboardStats(stats);
   }, [savedResumes]);
 
+  // Global API error listener
+  useEffect(() => {
+    const handleApiError = (event: any) => {
+      addNotification({
+        type: 'error',
+        title: 'API Error',
+        message: event.detail || 'An unexpected error occurred.',
+      });
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('api-error', handleApiError);
+      return () => window.removeEventListener('api-error', handleApiError);
+    }
+  }, []);
+
   const addNotification = (notification: Omit<Notification, 'id' | 'timestamp'>) => {
     const newNotification: Notification = {
       ...notification,
