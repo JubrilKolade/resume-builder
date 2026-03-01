@@ -9,6 +9,12 @@ import resumeRoutes from './routes/resumeRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import coverLetterRoutes from './routes/coverLetterRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load env vars
 dotenv.config();
@@ -19,10 +25,15 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
+
+// Static files
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -30,6 +41,7 @@ app.use('/api/resumes', resumeRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/cover-letters', coverLetterRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
