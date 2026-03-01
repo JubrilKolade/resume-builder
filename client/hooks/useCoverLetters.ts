@@ -11,7 +11,16 @@ export const useCoverLetters = () => {
 
     const createMutation = useMutation({
         mutationFn: coverLetterService.createCoverLetter,
-        onSuccess: () => {
+        onMutate: async (newLetter) => {
+            await queryClient.cancelQueries({ queryKey: ['cover-letters'] });
+            const previousLetters = queryClient.getQueryData(['cover-letters']);
+            queryClient.setQueryData(['cover-letters'], (old: any) => [...(old || []), { ...newLetter, id: 'temp-' + Date.now() }]);
+            return { previousLetters };
+        },
+        onError: (err, newLetter, context: any) => {
+            queryClient.setQueryData(['cover-letters'], context.previousLetters);
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['cover-letters'] });
         },
     });
@@ -19,14 +28,39 @@ export const useCoverLetters = () => {
     const updateMutation = useMutation({
         mutationFn: ({ id, data }: { id: string; data: any }) =>
             coverLetterService.updateCoverLetter(id, data),
-        onSuccess: () => {
+        onMutate: async ({ id, data }) => {
+            await queryClient.cancelQueries({ queryKey: ['cover-letters'] });
+            const previousLetters = queryClient.getQueryData(['cover-letters']);
+            queryClient.setQueryData(['cover-letters'], (old: any) =>
+                old?.map((letter: any) => letter.id === id ? { ...letter, ...data } : letter)
+            );
+            return { previousLetters };
+        },
+        onError: (err, variables, context: any) => {
+            queryClient.setQueryData(['cover-letters'], context.previousLetters);
+        },
+        onSettled: (data) => {
             queryClient.invalidateQueries({ queryKey: ['cover-letters'] });
+            if (data?.id) {
+                queryClient.invalidateQueries({ queryKey: ['cover-letter', data.id] });
+            }
         },
     });
 
     const deleteMutation = useMutation({
         mutationFn: coverLetterService.deleteCoverLetter,
-        onSuccess: () => {
+        onMutate: async (id) => {
+            await queryClient.cancelQueries({ queryKey: ['cover-letters'] });
+            const previousLetters = queryClient.getQueryData(['cover-letters']);
+            queryClient.setQueryData(['cover-letters'], (old: any) =>
+                old?.filter((letter: any) => letter.id !== id)
+            );
+            return { previousLetters };
+        },
+        onError: (err, id, context: any) => {
+            queryClient.setQueryData(['cover-letters'], context.previousLetters);
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['cover-letters'] });
         },
     });

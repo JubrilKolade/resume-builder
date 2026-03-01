@@ -12,7 +12,16 @@ export const useResumes = () => {
 
     const createResumeMutation = useMutation({
         mutationFn: resumeService.createResume,
-        onSuccess: () => {
+        onMutate: async (newResume) => {
+            await queryClient.cancelQueries({ queryKey: ['resumes'] });
+            const previousResumes = queryClient.getQueryData(['resumes']);
+            queryClient.setQueryData(['resumes'], (old: any) => [...(old || []), { ...newResume, id: 'temp-' + Date.now() }]);
+            return { previousResumes };
+        },
+        onError: (err, newResume, context: any) => {
+            queryClient.setQueryData(['resumes'], context.previousResumes);
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['resumes'] });
         },
     });
@@ -20,15 +29,39 @@ export const useResumes = () => {
     const updateResumeMutation = useMutation({
         mutationFn: ({ id, data }: { id: string; data: any }) =>
             resumeService.updateResume(id, data),
-        onSuccess: (data) => {
+        onMutate: async ({ id, data }) => {
+            await queryClient.cancelQueries({ queryKey: ['resumes'] });
+            const previousResumes = queryClient.getQueryData(['resumes']);
+            queryClient.setQueryData(['resumes'], (old: any) =>
+                old?.map((resume: any) => resume.id === id ? { ...resume, ...data } : resume)
+            );
+            return { previousResumes };
+        },
+        onError: (err, variables, context: any) => {
+            queryClient.setQueryData(['resumes'], context.previousResumes);
+        },
+        onSettled: (data) => {
             queryClient.invalidateQueries({ queryKey: ['resumes'] });
-            queryClient.invalidateQueries({ queryKey: ['resume', data.id] });
+            if (data?.id) {
+                queryClient.invalidateQueries({ queryKey: ['resume', data.id] });
+            }
         },
     });
 
     const deleteResumeMutation = useMutation({
         mutationFn: resumeService.deleteResume,
-        onSuccess: () => {
+        onMutate: async (id) => {
+            await queryClient.cancelQueries({ queryKey: ['resumes'] });
+            const previousResumes = queryClient.getQueryData(['resumes']);
+            queryClient.setQueryData(['resumes'], (old: any) =>
+                old?.filter((resume: any) => resume.id !== id)
+            );
+            return { previousResumes };
+        },
+        onError: (err, id, context: any) => {
+            queryClient.setQueryData(['resumes'], context.previousResumes);
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['resumes'] });
         },
     });
