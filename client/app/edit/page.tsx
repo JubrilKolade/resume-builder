@@ -28,7 +28,8 @@ export default function EditPage() {
     selectedTemplate,
     setSelectedTemplate,
     resumeStyle,
-    setCurrentStep
+    setCurrentStep,
+    isSaving
   } = useResume();
 
   // Update current step on mount
@@ -67,9 +68,16 @@ export default function EditPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 relative">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Edit Your Resume</h1>
           <p className="text-lg text-gray-600">Fill in your information below</p>
+
+          {isSaving && (
+            <div className="absolute top-0 right-0 flex items-center gap-2 text-sm text-blue-600 animate-pulse">
+              <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+              Saving...
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

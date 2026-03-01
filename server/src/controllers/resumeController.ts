@@ -11,6 +11,11 @@ export const createResume = async (req: AuthRequest, res: Response) => {
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
+        // Basic Validation
+        if (!data || !template || !style) {
+            return res.status(400).json({ message: 'Please provide all required fields (data, template, style)' });
+        }
+
         const resume = new Resume({
             userId,
             data,
@@ -19,7 +24,15 @@ export const createResume = async (req: AuthRequest, res: Response) => {
         });
 
         await resume.save();
-        res.status(201).json(resume);
+        res.status(201).json({
+            id: resume._id,
+            title: resume.title,
+            data: resume.data,
+            template: resume.template,
+            style: resume.style,
+            createdAt: resume.createdAt,
+            updatedAt: resume.updatedAt,
+        });
     } catch (error: any) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }

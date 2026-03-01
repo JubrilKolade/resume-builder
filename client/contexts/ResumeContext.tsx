@@ -1,8 +1,10 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback, useRef } from 'react';
 import { ResumeData, TemplateType, ResumeStyle, AppState } from '@/types/resume';
 import { defaultResumeData } from '@/utils/defaultData';
+import { useResumes } from '@/hooks/useResumes';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ResumeContextType {
   resumeData: AppState;
@@ -13,6 +15,10 @@ interface ResumeContextType {
   setResumeStyle: (style: ResumeStyle) => void;
   currentStep: number;
   setCurrentStep: (step: number) => void;
+  resumeId: string | null;
+  setResumeId: (id: string | null) => void;
+  isSaving: boolean;
+  saveResume: () => Promise<string | null>;
   // Convenience getters for nested data
   getResumeData: () => ResumeData;
 }
@@ -27,6 +33,12 @@ const defaultResumeStyle: ResumeStyle = {
 const ResumeContext = createContext<ResumeContextType | undefined>(undefined);
 
 export const ResumeProvider = ({ children }: { children: ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  const { createResume, updateResume } = useResumes();
+
+  const [resumeId, setResumeId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
   const [resumeData, setResumeData] = useState<AppState>(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -56,17 +68,66 @@ export const ResumeProvider = ({ children }: { children: ReactNode }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   // Save to localStorage whenever resumeData or resumeStyle changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('resumeData', JSON.stringify(resumeData));
     }
   }, [resumeData]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('resumeStyle', JSON.stringify(resumeStyle));
     }
   }, [resumeStyle]);
+
+  const saveResume = useCallback(async () => {
+    if (!isAuthenticated) return null;
+
+    setIsSaving(true);
+    try {
+      const payload = {
+        data: resumeData.resumeData,
+        template: selectedTemplate,
+        style: resumeStyle,
+      };
+
+      if (resumeId) {
+        await updateResume({ id: resumeId, data: payload });
+        return resumeId;
+      } else {
+        const result = await createResume(payload);
+        const newId = result.id;
+        setResumeId(newId);
+        return newId;
+      }
+    } catch (error) {
+      console.error('Error saving resume:', error);
+      return null;
+    } finally {
+      setIsSaving(false);
+    }
+  }, [isAuthenticated, resumeId, resumeData, selectedTemplate, resumeStyle, createResume, updateResume]);
+
+  // Auto-save logic
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(() => {
+      saveResume();
+    }, 3000); // Auto-save after 3 seconds of inactivity
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [resumeData, selectedTemplate, resumeStyle, isAuthenticated, saveResume]);
 
   return (
     <ResumeContext.Provider
@@ -79,6 +140,10 @@ export const ResumeProvider = ({ children }: { children: ReactNode }) => {
         setResumeStyle,
         currentStep,
         setCurrentStep,
+        resumeId,
+        setResumeId,
+        isSaving,
+        saveResume,
         getResumeData: () => resumeData.resumeData,
       }}
     >
